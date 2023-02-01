@@ -1,6 +1,6 @@
 ﻿namespace RangeTask;
 
-public class Range
+public class Range : ICloneable
 {
     public double From { get; set; }
 
@@ -12,7 +12,12 @@ public class Range
         To = to;
     }
 
-    public double GetRangeLength()
+    public object Clone()
+    {
+        return MemberwiseClone();
+    }
+
+    public double GetLength()
     {
         return To - From;
     }
@@ -22,29 +27,29 @@ public class Range
         return From <= value && value <= To;
     }
 
-    public Range GetRangesIntersect(Range secondRange)
+    public Range GetRangesIntersection(Range range)
     {
-        if (To <= secondRange.From || secondRange.To <= From)
+        if (To <= range.From || range.To <= From)
         {
             return null;
         }
 
-        if (From <= secondRange.From && To <= secondRange.To)
+        if (From <= range.From && To <= range.To)
         {
-            return new Range(secondRange.From, To);
+            return new Range(range.From, To);
         }
 
-        if (secondRange.From <= From && secondRange.To <= To)
+        if (range.From <= From && range.To <= To)
         {
-            return new Range(From, secondRange.To);
+            return new Range(From, range.To);
         }
 
-        if (From <= secondRange.From && secondRange.To <= To)
+        if (From <= range.From && range.To <= To)
         {
-            return new Range(secondRange.From, secondRange.To);
+            return new Range(range.From, range.To);
         }
 
-        if (secondRange.From <= From && To <= secondRange.To)
+        if (range.From <= From && To <= range.To)
         {
             return new Range(From, To);
         }
@@ -52,89 +57,83 @@ public class Range
         return null;
     }
 
-    public Range[] GetRangesUnion(Range secondRange)
+    public Range[] GetRangesUnion(Range range)
     {
-        if (To < secondRange.From)
+        if (To < range.From)
         {
             return new Range[]
             {
-                this,
-                secondRange
+                (Range) Clone(),
+                (Range) range.Clone()
             };
         }
 
-        if (secondRange.To < From)
+        if (range.To < From)
         {
             return new Range[]
             {
-                secondRange,
-                this
+                (Range) range.Clone(),
+                (Range) Clone()
             };
         }
 
-        if (From <= secondRange.From && To <= secondRange.To)
+        if (From <= range.From && To <= range.To)
         {
-            return new Range[] {new Range(From, secondRange.To)};
+            return new Range[] { new Range(From, range.To) };
         }
 
-        if (secondRange.From <= From && secondRange.To <= To)
+        if (range.From <= From && range.To <= To)
         {
-            return new Range[] {new Range(secondRange.From, To)};
+            return new Range[] { new Range(range.From, To) };
         }
 
-        if (From <= secondRange.From && secondRange.To <= To)
+        if (From <= range.From && range.To <= To)
         {
-            return new Range[] {new Range(From, To)};
+            return new Range[] { new Range(From, To) };
         }
 
-        if (secondRange.From <= From && To <= secondRange.To)
+        if (range.From <= From && To <= range.To)
         {
-            return new Range[] {new Range(secondRange.From, secondRange.To)};
+            return new Range[] { new Range(range.From, range.To) };
         }
 
-        throw new ArgumentException("Неверный диапазон", nameof(secondRange));
+        throw new ArgumentException("Неверный диапазон", nameof(range));
     }
 
-    public Range[] GetRangesSubtract(Range secondRange)
+    public Range[] GetRangesDifference(Range range)
     {
-        if (To <= secondRange.From || secondRange.To <= From)
+        if (To <= range.From || range.To <= From)
         {
             return new Range[]
             {
-                this
+                (Range) Clone()
             };
         }
 
-        if (From < secondRange.From)
+        if (From < range.From && range.To < To)
         {
             return new Range[]
             {
-                new Range(From, secondRange.From)
+                new Range(From, range.From),
+                new Range(range.To, To),
             };
         }
 
-        if (secondRange.From < From)
+        if (From < range.From)
         {
-            return new Range[]
-            {
-                new Range( secondRange.To, To)
-            };
+            return new Range[] { new Range(From, range.From) };
         }
 
-        if (From < secondRange.From && secondRange.To < To)
+        if (range.To < To)
         {
-            return new Range[]
-            {
-                new Range(From, secondRange.From),
-                new Range(secondRange.To, To),
-            };
+            return new Range[] { new Range(range.To, To) };
         }
 
-        if (secondRange.From <= From || To <= secondRange.To)
-        {
-            return new Range[0];
-        }
+        return Array.Empty<Range>();
+    }
 
-        throw new ArgumentException("Неверный диапазон", nameof(secondRange));
+    public override string ToString()
+    {
+        return $"Range From-{From}, To-{To}";
     }
 }

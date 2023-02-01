@@ -4,24 +4,24 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        Range range = new Range(2,10);
+        var rangeSource = new Range(2, 10);
 
-        Console.WriteLine($"Длина диапазона: {range.GetRangeLength()}");
-        Console.WriteLine($"Число {5} принадлежит диапазону: {range.IsInside(5)}");
+        Console.WriteLine($"Длина диапазона: {rangeSource.GetLength()}");
+        Console.WriteLine($"Число {5} принадлежит диапазону: {rangeSource.IsInside(5)}");
 
-        Range rangeIntersect = range.GetRangesIntersect(new Range(5, 12));
-        Console.WriteLine($"Длина диапазона пересечения: {rangeIntersect.GetRangeLength()}");
+        var rangeIntersection = rangeSource.GetRangesIntersection(new Range(5, 12));
+        Console.WriteLine($"Диапазона пересечения: {rangeIntersection}");
 
-        Range[] rangesUnion = range.GetRangesUnion(new Range(5, 12));
-        foreach (var rangeUn in rangesUnion)
+        var rangesUnion = rangeSource.GetRangesUnion(new Range(5, 12));
+        foreach (var range in rangesUnion)
         {
-            Console.WriteLine($"Длина диапазона после объединения: {rangeUn.GetRangeLength()}");
+            Console.WriteLine($"Диапазон после объединения: {range}");
         }
 
-        Range[] rangesSubtract = range.GetRangesSubtract(new Range(0, 3));
-        foreach (var rangeSub in rangesSubtract)
+        var rangesSubtract = rangeSource.GetRangesDifference(new Range(0, 3));
+        foreach (var range in rangesSubtract)
         {
-            Console.WriteLine($"Длина диапазона после вычитания: {rangeSub.GetRangeLength()}");
+            Console.WriteLine($"Диапазон после вычитания: {range}");
         }
 
         Console.Read();
