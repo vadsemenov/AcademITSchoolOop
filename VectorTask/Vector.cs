@@ -1,4 +1,6 @@
-﻿namespace VectorTask;
+﻿using System.Text;
+
+namespace VectorTask;
 
 public class Vector
 {
@@ -8,8 +10,7 @@ public class Vector
     {
         if (size <= 0)
         {
-            throw new ArgumentException("Размерность Вектора должна быть больше 0. Текущий размер: " + size,
-                nameof(size));
+            throw new ArgumentException("Размерность Вектора должна быть больше 0. Текущий размер: " + size, nameof(size));
         }
 
         _components = new double[size];
@@ -28,25 +29,24 @@ public class Vector
 
         if (components.Length == 0)
         {
-            throw new ArgumentException("Размерность массива должна быть больше 0, сейчас равно: " + components.Length,
-                nameof(components));
+            throw new ArgumentException("Размерность массива должна быть больше 0, сейчас равно: " + components.Length, nameof(components));
         }
 
-        this._components = (double[])components.Clone();
+        _components = (double[])components.Clone();
     }
 
     public Vector(int size, double[] components)
     {
         if (size <= 0)
         {
-            throw new ArgumentException("Размерность должна быть больше 0. Текущее значение равно: " + size);
+            throw new ArgumentException("Размерность должна быть больше 0. Текущее значение равно: " + size, nameof(components));
         }
 
-        int minSize = Math.Min(size, components.Length);
+        var minSize = Math.Min(size, components.Length);
 
-        this._components = new double[minSize];
+        Array.Resize(ref _components, minSize);
 
-        Array.Copy(components, this._components, minSize);
+        Array.Copy(components, _components, minSize);
     }
 
     public int GetSize()
@@ -54,18 +54,14 @@ public class Vector
         return _components.Length;
     }
 
-    public Vector AddVector(Vector vector)
+    public Vector Add(Vector vector)
     {
         if (_components.Length < vector._components.Length)
         {
-            var tempComponents = new double[vector._components.Length];
-
-            Array.Copy(_components, tempComponents, _components.Length);
-
-            _components = (double[])tempComponents.Clone();
+            Array.Resize(ref _components, vector._components.Length);
         }
 
-        for (int i = 0; i < vector._components.Length; i++)
+        for (var i = 0; i < vector._components.Length; i++)
         {
             _components[i] += vector._components[i];
         }
@@ -75,18 +71,14 @@ public class Vector
 
     public static Vector GetSum(Vector vector1, Vector vector2)
     {
-        return new Vector(vector1).AddVector(vector2);
+        return new Vector(vector1).Add(vector2);
     }
 
-    public Vector SubtractVector(Vector vector)
+    public Vector Subtract(Vector vector)
     {
         if (_components.Length < vector._components.Length)
         {
-            var tempComponents = new double[vector._components.Length];
-
-            Array.Copy(_components, tempComponents, _components.Length);
-
-            _components = (double[])tempComponents.Clone();
+            Array.Resize(ref _components, vector._components.Length);
         }
 
         for (int i = 0; i < vector._components.Length; i++)
@@ -99,12 +91,12 @@ public class Vector
 
     public static Vector GetDifference(Vector vector1, Vector vector2)
     {
-        return new Vector(vector1).SubtractVector(vector2);
+        return new Vector(vector1).Subtract(vector2);
     }
 
     public Vector MultiplyByScalar(double scalar)
     {
-        for (int i = 0; i < _components.Length; i++)
+        for (var i = 0; i < _components.Length; i++)
         {
             _components[i] *= scalar;
         }
@@ -117,25 +109,25 @@ public class Vector
         return MultiplyByScalar(-1);
     }
 
-    public double GetVectorLength()
+    public double GetLength()
     {
-        double elementsSquaresSum = 0;
+        var elementsSquaresSum = 0D;
 
-        foreach (double component in _components)
+        foreach (var component in _components)
         {
-            elementsSquaresSum += Math.Abs(component);
+            elementsSquaresSum += component * component;
         }
 
-        return elementsSquaresSum;
+        return Math.Sqrt(elementsSquaresSum);
     }
 
     public static double GetScalarProduct(Vector vector1, Vector vector2)
     {
-        double scalarProduct = 0;
+        var scalarProduct = 0D;
 
-        int minVectorSize = Math.Min(vector1._components.Length, vector2._components.Length);
+        var minVectorSize = Math.Min(vector1._components.Length, vector2._components.Length);
 
-        for (int i = 0; i < minVectorSize; i++)
+        for (var i = 0; i < minVectorSize; i++)
         {
             scalarProduct += vector1._components[i] * vector2._components[i];
         }
@@ -153,34 +145,34 @@ public class Vector
         _components[index] = element;
     }
 
-    public override bool Equals(object? obj)
+    public override bool Equals(object obj)
     {
         if (obj == this)
         {
             return true;
         }
 
-        if (obj == null || obj.GetType() != this.GetType())
+        if (obj == null || obj.GetType() != GetType())
         {
             return false;
         }
 
-        Vector vector = (Vector)obj;
+        var vector = (Vector)obj;
 
-        return Array.Equals(this._components, vector._components);
+        return Array.Equals(_components, vector._components);
     }
 
     public override int GetHashCode()
     {
-        int prime = 37;
-        int hash = 1;
+        var prime = 37;
+        var hash = 1;
 
         hash = prime * hash + GetArrayHashCode(_components);
 
         return hash;
     }
 
-    public static int GetArrayHashCode(double[]? array)
+    private static int GetArrayHashCode(double[] array)
     {
         if (array == null)
         {
@@ -189,7 +181,7 @@ public class Vector
 
         int result = 1;
 
-        foreach (double element in array)
+        foreach (var element in array)
         {
             result = 31 * result + element.GetHashCode();
         }
@@ -199,8 +191,12 @@ public class Vector
 
     public override string ToString()
     {
-        String storageInfo = string.Join(',', _components);
+        var stringBuilder = new StringBuilder();
 
-        return "{" + storageInfo + "}";
+        stringBuilder.Append("{");
+        stringBuilder.Append(string.Join(", ", _components));
+        stringBuilder.Append("}");
+
+        return stringBuilder.ToString();
     }
 }
