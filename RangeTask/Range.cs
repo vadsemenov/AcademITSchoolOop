@@ -27,80 +27,27 @@ public class Range : ICloneable
         return From <= value && value <= To;
     }
 
-    public Range GetRangesIntersection(Range range)
+    public Range GetIntersection(Range range)
     {
-        if (To <= range.From || range.To <= From)
+        if (range.To <= From || range.From >= To)
         {
             return null;
         }
 
-        if (From <= range.From && To <= range.To)
-        {
-            return new Range(range.From, To);
-        }
-
-        if (range.From <= From && range.To <= To)
-        {
-            return new Range(From, range.To);
-        }
-
-        if (From <= range.From && range.To <= To)
-        {
-            return new Range(range.From, range.To);
-        }
-
-        if (range.From <= From && To <= range.To)
-        {
-            return new Range(From, To);
-        }
-
-        return null;
+        return new Range(Math.Max(From, range.From), Math.Min(To, range.To));
     }
 
-    public Range[] GetRangesUnion(Range range)
+    public Range[] GetUnion(Range range)
     {
-        if (To < range.From)
+        if (range.To < From || range.From > To)
         {
-            return new Range[]
-            {
-                (Range) Clone(),
-                (Range) range.Clone()
-            };
+            return new Range[] { new Range(From, To), new Range(range.From, range.To) };
         }
 
-        if (range.To < From)
-        {
-            return new Range[]
-            {
-                (Range) range.Clone(),
-                (Range) Clone()
-            };
-        }
-
-        if (From <= range.From && To <= range.To)
-        {
-            return new Range[] { new Range(From, range.To) };
-        }
-
-        if (range.From <= From && range.To <= To)
-        {
-            return new Range[] { new Range(range.From, To) };
-        }
-
-        if (From <= range.From && range.To <= To)
-        {
-            return new Range[] { new Range(From, To) };
-        }
-
-        if (range.From <= From && To <= range.To)
-        {
-            return new Range[] { new Range(range.From, range.To) };
-        }
-
-        throw new ArgumentException("Неверный диапазон", nameof(range));
+        return new Range[] { new Range(Math.Min(From, range.From), Math.Max(To, range.To)) };
     }
 
-    public Range[] GetRangesDifference(Range range)
+    public Range[] GetDifference(Range range)
     {
         if (To <= range.From || range.To <= From)
         {
