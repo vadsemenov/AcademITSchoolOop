@@ -6,7 +6,7 @@ public static class Program
     {
         var rangeSource = new Range(2, 10);
 
-        Console.WriteLine($"Длина диапазона: {rangeSource.GetLength()}");
+        Console.WriteLine($"Исходный диапазон: {rangeSource}");
         Console.WriteLine($"Число {5} принадлежит диапазону: {rangeSource.IsInside(5)}");
 
         var rangeIntersection = rangeSource.GetRangesIntersection(new Range(5, 12));
