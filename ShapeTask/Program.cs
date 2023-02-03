@@ -1,10 +1,13 @@
-﻿namespace ShapeTask;
+﻿using ShapeTask.Comparators;
+using ShapeTask.Shapes;
+
+namespace ShapeTask;
 
 public class Program
 {
     static void Main(string[] args)
     {
-        IShape[] shapes = new IShape[]
+        IShape[] shapes =
         {
             new Circle(10),
             new Rectangle(10, 20),
@@ -20,7 +23,7 @@ public class Program
         Console.WriteLine($"Наибольшая площадь фигуры: {largestAreaShape.GetArea()}");
 
         IShape secondLargestPerimeterShape = GetSecondLargestPerimeterShape(shapes);
-        Console.WriteLine($"Второй по величине периметер фигуры: {secondLargestPerimeterShape.GetPerimeter()}");
+        Console.WriteLine($"Второй по величине периметр фигуры: {secondLargestPerimeterShape.GetPerimeter()}");
 
         Console.Read();
     }
@@ -30,7 +33,7 @@ public class Program
         IShape[] shapesArray = shapes.Clone() as IShape[];
         Array.Sort(shapesArray, new ShapePerimeterComparer());
 
-        return shapesArray[shapesArray.Length - 2];
+        return shapesArray[^2];
     }
 
     private static IShape GetLargestAreaShape(IShape[] shapes)
@@ -38,22 +41,6 @@ public class Program
         IShape[] shapesArray = shapes.Clone() as IShape[];
         Array.Sort(shapesArray, new ShapeAreaComparer());
 
-        return shapesArray[shapesArray.Length - 1];
-    }
-}
-
-public class ShapeAreaComparer : IComparer<IShape>
-{
-    public int Compare(IShape x, IShape y)
-    {
-        return x.GetArea().CompareTo(y.GetArea());
-    }
-}
-
-public class ShapePerimeterComparer : IComparer<IShape>
-{
-    public int Compare(IShape x, IShape y)
-    {
-        return x.GetPerimeter().CompareTo(y.GetPerimeter());
+        return shapesArray[^1];
     }
 }

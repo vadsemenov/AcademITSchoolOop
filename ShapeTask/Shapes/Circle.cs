@@ -1,59 +1,59 @@
-﻿namespace ShapeTask;
+﻿namespace ShapeTask.Shapes;
 
 public class Circle : IShape
 {
-    private readonly double _radius;
+    private double Radius { get; set; }
 
     public Circle(double radius)
     {
-        _radius = radius;
+        Radius = radius;
     }
 
     public double GetWidth()
     {
-        return 2 * _radius;
+        return 2 * Radius;
     }
 
     public double GetHeight()
     {
-        return 2 * _radius;
+        return 2 * Radius;
     }
 
     public double GetArea()
     {
-        return Math.PI * (_radius * _radius);
+        return Math.PI * (Radius * Radius);
     }
 
     public double GetPerimeter()
     {
-        return 2 * Math.PI * _radius;
-    } 
+        return 2 * Math.PI * Radius;
+    }
 
     public override string ToString()
     {
-        return $"Фигура - {nameof(Circle)}";
+        return $"Фигура - {nameof(Circle)}, радиус - {Radius}";
     }
-    public override bool Equals(object? obj)
+    public override bool Equals(object obj)
     {
         if (obj == this)
         {
             return true;
         }
 
-        if (obj == null || obj.GetType() != this.GetType())
+        if (obj == null || obj.GetType() != GetType())
         {
             return false;
         }
-        
+
         Circle other = (Circle)obj;
 
-        return  _radius.CompareTo(other._radius) == 0 ;
+        return Math.Abs(Radius - other.Radius) < double.Epsilon;
     }
 
     public override int GetHashCode()
     {
         int prime = 37;
-        int hash = prime + _radius.GetHashCode();
+        int hash = prime + Radius.GetHashCode();
 
         return hash;
     }

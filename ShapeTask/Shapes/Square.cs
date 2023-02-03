@@ -1,62 +1,61 @@
-﻿namespace ShapeTask;
+﻿namespace ShapeTask.Shapes;
 
 public class Square : IShape
 {
-    private readonly double _sideLength;
+    private double SideLength { get; set; }
 
     public Square(double sideLength)
     {
-        this._sideLength = sideLength;
+        SideLength = sideLength;
     }
 
     public double GetWidth()
     {
-        return _sideLength;
+        return SideLength;
     }
 
     public double GetHeight()
     {
-        return _sideLength;
+        return SideLength;
     }
 
     public double GetArea()
     {
-        return _sideLength * _sideLength;
+        return SideLength * SideLength;
     }
 
     public double GetPerimeter()
     {
-        return 4 * _sideLength;
+        return 4 * SideLength;
     }
 
     public override string ToString()
     {
-        return $"Фигура - {nameof(Square)}";
+        return $"Фигура - {nameof(Square)}, длина стороны - {SideLength}";
     }
 
-    public override bool Equals(object? obj)
+    public override bool Equals(object obj)
     {
         if (obj == this)
         {
             return true;
         }
 
-        if (obj == null || obj.GetType() != this.GetType())
+        if (obj == null || obj.GetType() != GetType())
         {
             return false;
         }
 
         Square other = (Square)obj;
 
-        return _sideLength.CompareTo(other._sideLength) == 0;
+        return Math.Abs(SideLength - other.SideLength) < double.Epsilon;
     }
 
     public override int GetHashCode()
     {
         int prime = 37;
         int hash = 1;
-        hash = prime * hash + _sideLength.GetHashCode();
-        // hash = prime * hash + (c!= null? c.GetHashCode():0);
+        hash = prime * hash + SideLength.GetHashCode();
 
         return hash;
     }
