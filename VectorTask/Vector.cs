@@ -44,7 +44,7 @@ public class Vector
 
         var minSize = Math.Min(size, components.Length);
 
-        Array.Resize(ref _components, minSize);
+        _components = new double[minSize];
 
         Array.Copy(components, _components, minSize);
     }
@@ -104,26 +104,26 @@ public class Vector
         return this;
     }
 
-    public Vector ReverseVector()
+    public Vector Reverse()
     {
         return MultiplyByScalar(-1);
     }
 
     public double GetLength()
     {
-        var elementsSquaresSum = 0D;
+        var componentsSquaresSum = 0.0;
 
         foreach (var component in _components)
         {
-            elementsSquaresSum += component * component;
+            componentsSquaresSum += component * component;
         }
 
-        return Math.Sqrt(elementsSquaresSum);
+        return Math.Sqrt(componentsSquaresSum);
     }
 
     public static double GetScalarProduct(Vector vector1, Vector vector2)
     {
-        var scalarProduct = 0D;
+        var scalarProduct = 0.0;
 
         var minVectorSize = Math.Min(vector1._components.Length, vector2._components.Length);
 
@@ -159,7 +159,30 @@ public class Vector
 
         var vector = (Vector)obj;
 
-        return Array.Equals(_components, vector._components);
+        return ArraysEquals(_components, vector._components);
+    }
+
+    private bool ArraysEquals(double[] first, double[] second)
+    {
+        if (first == null || second == null)
+        {
+            return false;
+        }
+
+        if (first.Length != second.Length)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < first.Length; i++)
+        {
+            if (Math.Abs(first[i] - second[i]) > double.Epsilon)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public override int GetHashCode()
@@ -193,9 +216,9 @@ public class Vector
     {
         var stringBuilder = new StringBuilder();
 
-        stringBuilder.Append("{");
+        stringBuilder.Append('{');
         stringBuilder.Append(string.Join(", ", _components));
-        stringBuilder.Append("}");
+        stringBuilder.Append('}');
 
         return stringBuilder.ToString();
     }

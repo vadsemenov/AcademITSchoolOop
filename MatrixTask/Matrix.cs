@@ -117,7 +117,7 @@ public class Matrix
 
         for (int i = 0; i < transposedMatrixRows.Length; i++)
         {
-            transposedMatrixRows[i] = GetColumnByIndex(i); ---
+            transposedMatrixRows[i] = GetColumnByIndex(i);// ---
         }
 
         _rows = transposedMatrixRows;

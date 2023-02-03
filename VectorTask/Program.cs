@@ -5,7 +5,7 @@ public class Program
     public static void Main(string[] args)
     {
         var vector1 = new Vector(4);
-        double[] components = {13.5, 9.3, 3.6, 8.9, 25.7, 33.0};
+        var components = new double[] { 13.5, 9.3, 3.6, 8.9, 25.7, 33.0 };
         var vector2 = new Vector(components);
         var vector3 = new Vector(5, components);
         var vector4 = new Vector(vector3);
@@ -40,7 +40,7 @@ public class Program
         vector4.MultiplyByScalar(10.0);
         Console.WriteLine("Умножение вектора 4 на скаляр 10: " + vector4);
 
-        Console.WriteLine("Разворот вектора 3: " + vector3.ReverseVector());
+        Console.WriteLine("Разворот вектора 3: " + vector3.Reverse());
 
         var scalarProduct = Vector.GetScalarProduct(vector2, vector3);
         Console.WriteLine("Скалярное произведение вектора 2 и 3: " + scalarProduct);

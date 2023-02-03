@@ -81,6 +81,6 @@ public class Range : ICloneable
 
     public override string ToString()
     {
-        return $"Range From-{From}, To-{To}";
+        return $"({From}; {To})";
     }
 }
