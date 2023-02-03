@@ -97,7 +97,7 @@ public class Triangle : IShape
             return false;
         }
 
-        Triangle other = (Triangle) obj;
+        Triangle other = (Triangle)obj;
 
         return Math.Abs(X1 - other.X1) < double.Epsilon &&
                Math.Abs(X2 - other.X2) < double.Epsilon &&
