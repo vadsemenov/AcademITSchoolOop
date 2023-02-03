@@ -37,7 +37,7 @@ public class SingleLinkedList<T>
 
     public int GetSize()
     {
-        int size = 0;
+        var size = 0;
 
         if (_headNode == null)
         {
@@ -81,7 +81,7 @@ public class SingleLinkedList<T>
 
         var currentNode = _headNode;
 
-        for (int i = 1; i <= index; i++)
+        for (var i = 1; i <= index; i++)
         {
             currentNode = currentNode.NextNode ?? throw new ArgumentOutOfRangeException(nameof(index), "Размер списка меньше запрашиваемого индекса." + " Размер списка " + i + 1 + " элементов. Текущее значение индекса " + index);
         }
@@ -132,7 +132,7 @@ public class SingleLinkedList<T>
             return oldValue;
         }
 
-        for (int i = 1; i <= index; i++)
+        for (var i = 1; i <= index; i++)
         {
             parentNode = currentNode;
             currentNode = currentNode.NextNode;
@@ -270,32 +270,5 @@ public class SingleLinkedList<T>
         newList._headNode = newHeadNode;
 
         return newList;
-    }
-}
-
-public class Node<T> : ICloneable
-{
-    public Node<T> NextNode;
-
-    public T Value { get; set; }
-
-    public Node(T value) : this(null!, value)
-    {
-    }
-
-    public Node(Node<T> nextNode, T value)
-    {
-        NextNode = nextNode;
-        Value = value;
-    }
-
-    public override string ToString()
-    {
-        return $"Значение узла равно {Value}";
-    }
-
-    public object Clone()
-    {
-        return new Node<T>(Value);
     }
 }
