@@ -65,15 +65,11 @@ namespace LambdaTask
             var averageAgeNotAdultPerson = persons.Where(x => x.Age < 18).Average(x => x.Age);
             Console.WriteLine("Средний возраст людей младше 18 лет: " + averageAgeNotAdultPerson);
 
-            var personsDictionary =
-                persons.GroupBy(x => x.Name, y => y.Age).ToDictionary(x => (x.Key), y => y.Average());
-            Console.WriteLine("Содержимое Person Dictionary: " +
-                              string.Join(", ", personsDictionary.Select(x => x.Key + " " + x.Value).ToArray()));
+            var personsDictionary = persons.GroupBy(x => x.Name, y => y.Age).ToDictionary(x => (x.Key), y => y.Average());
+            Console.WriteLine("Содержимое Person Dictionary: " + string.Join(", ", personsDictionary.Select(x => x.Key + " " + x.Value).ToArray()));
 
-            var personsWithAgeFrom20To45 =
-                persons.Where(x => x.Age >= 20 && x.Age <= 45).OrderByDescending(x => x.Age).ToList();
-            Console.WriteLine("Имена людей от 20 до 45 в порядке убывания возраста: " + string.Join(" | ",
-                personsWithAgeFrom20To45.Select(x => x.Name + " " + x.Age).ToArray()));
+            var personsWithAgeFrom20To45 = persons.Where(x => x.Age >= 20 && x.Age <= 45).OrderByDescending(x => x.Age).ToList();
+            Console.WriteLine("Имена людей от 20 до 45 в порядке убывания возраста: " + string.Join(" | ", personsWithAgeFrom20To45.Select(x => x.Name + " " + x.Age).ToArray()));
 
             Console.Read();
         }
