@@ -1,6 +1,6 @@
 ﻿namespace LambdaTask
 {
-    public class Person
+    public record Person
     {
         public string Name { get; set; }
 
