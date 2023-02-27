@@ -81,7 +81,7 @@ public class Vector
             Array.Resize(ref _components, vector._components.Length);
         }
 
-        for (int i = 0; i < vector._components.Length; i++)
+        for (var i = 0; i < vector._components.Length; i++)
         {
             _components[i] -= vector._components[i];
         }
@@ -140,9 +140,9 @@ public class Vector
         return _components[index];
     }
 
-    public void SetComponentByIndex(int index, double element)
+    public void SetComponentByIndex(int index, double component)
     {
-        _components[index] = element;
+        _components[index] = component;
     }
 
     public override bool Equals(object obj)
@@ -162,21 +162,26 @@ public class Vector
         return ArraysEquals(_components, vector._components);
     }
 
-    private bool ArraysEquals(double[] first, double[] second)
+    private static bool ArraysEquals(double[] array1, double[] array2)
     {
-        if (first == null || second == null)
+        if (array1 == null && array2 == null)
+        {
+            return true;
+        }
+
+        if (array1 == null || array2 == null)
         {
             return false;
         }
 
-        if (first.Length != second.Length)
+        if (array1.Length != array2.Length)
         {
             return false;
         }
 
-        for (var i = 0; i < first.Length; i++)
+        for (var i = 0; i < array1.Length; i++)
         {
-            if (Math.Abs(first[i] - second[i]) > double.Epsilon)
+            if (array1[i] != array2[i])
             {
                 return false;
             }
@@ -202,7 +207,7 @@ public class Vector
             return 0;
         }
 
-        int result = 1;
+        var result = 1;
 
         foreach (var element in array)
         {
