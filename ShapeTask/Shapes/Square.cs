@@ -2,7 +2,7 @@
 
 public class Square : IShape
 {
-    private double SideLength { get; set; }
+    public double SideLength { get; }
 
     public Square(double sideLength)
     {
@@ -48,7 +48,7 @@ public class Square : IShape
 
         Square other = (Square)obj;
 
-        return Math.Abs(SideLength - other.SideLength) < double.Epsilon;
+        return SideLength == other.SideLength;
     }
 
     public override int GetHashCode()

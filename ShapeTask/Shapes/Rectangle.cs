@@ -2,8 +2,9 @@
 
 public class Rectangle : IShape
 {
-    private double Width { get; set; }
-    private double Height { get; set; }
+    public double Width { get; }
+
+    public double Height { get; }
 
     public Rectangle(double width, double height)
     {
@@ -50,7 +51,7 @@ public class Rectangle : IShape
 
         Rectangle other = (Rectangle)obj;
 
-        return Math.Abs(Height - other.Height) < double.Epsilon && Math.Abs(Width - other.Width) < double.Epsilon;
+        return Height == other.Height && Width == other.Width;
     }
 
     public override int GetHashCode()

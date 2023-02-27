@@ -2,7 +2,7 @@
 
 public class Circle : IShape
 {
-    private double Radius { get; set; }
+    public double Radius { get; }
 
     public Circle(double radius)
     {
@@ -33,6 +33,7 @@ public class Circle : IShape
     {
         return $"Фигура - {nameof(Circle)}, радиус - {Radius}";
     }
+
     public override bool Equals(object obj)
     {
         if (obj == this)
@@ -47,7 +48,7 @@ public class Circle : IShape
 
         Circle other = (Circle)obj;
 
-        return Math.Abs(Radius - other.Radius) < double.Epsilon;
+        return Radius == other.Radius;
     }
 
     public override int GetHashCode()

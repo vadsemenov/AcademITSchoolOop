@@ -2,12 +2,17 @@
 
 public class Triangle : IShape
 {
-    private double X1 { get; set; }
-    private double Y1 { get; set; }
-    private double X2 { get; set; }
-    private double Y2 { get; set; }
-    private double X3 { get; set; }
-    private double Y3 { get; set; }
+    public double X1 { get; }
+
+    public double Y1 { get; }
+    
+    public double X2 { get; }
+    
+    public double Y2 { get; }
+    
+    public double X3 { get; }
+    
+    public double Y3 { get; }
 
     public Triangle(double x1, double y1, double x2, double y2, double x3, double y3)
     {
@@ -99,12 +104,12 @@ public class Triangle : IShape
 
         Triangle other = (Triangle)obj;
 
-        return Math.Abs(X1 - other.X1) < double.Epsilon &&
-               Math.Abs(X2 - other.X2) < double.Epsilon &&
-               Math.Abs(X3 - other.X3) < double.Epsilon &&
-               Math.Abs(Y1 - other.Y1) < double.Epsilon &&
-               Math.Abs(Y2 - other.Y2) < double.Epsilon &&
-               Math.Abs(Y2 - other.Y2) < double.Epsilon;
+        return X1 == other.X1 &&
+               X2 == other.X2 &&
+               X3 == other.X3 &&
+               Y1 == other.Y1 &&
+               Y2 == other.Y2 &&
+               Y2 == other.Y2;
     }
 
     public override int GetHashCode()

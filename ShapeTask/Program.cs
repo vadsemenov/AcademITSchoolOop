@@ -1,4 +1,4 @@
-﻿using ShapeTask.Comparators;
+﻿using ShapeTask.Comparers;
 using ShapeTask.Shapes;
 
 namespace ShapeTask;

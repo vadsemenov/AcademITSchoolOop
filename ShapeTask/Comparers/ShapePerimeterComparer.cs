@@ -1,6 +1,6 @@
 ﻿using ShapeTask.Shapes;
 
-namespace ShapeTask.Comparators;
+namespace ShapeTask.Comparers;
 
 public class ShapePerimeterComparer : IComparer<IShape>
 {
