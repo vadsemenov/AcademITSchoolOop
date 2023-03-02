@@ -5,13 +5,13 @@ public class Triangle : IShape
     public double X1 { get; }
 
     public double Y1 { get; }
-    
+
     public double X2 { get; }
-    
+
     public double Y2 { get; }
-    
+
     public double X3 { get; }
-    
+
     public double Y3 { get; }
 
     public Triangle(double x1, double y1, double x2, double y2, double x3, double y3)
@@ -109,7 +109,7 @@ public class Triangle : IShape
                X3 == other.X3 &&
                Y1 == other.Y1 &&
                Y2 == other.Y2 &&
-               Y2 == other.Y2;
+               Y3 == other.Y3;
     }
 
     public override int GetHashCode()

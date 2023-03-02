@@ -30,7 +30,7 @@ public class Program
 
     private static IShape GetSecondLargestPerimeterShape(IShape[] shapes)
     {
-        IShape[] shapesArray = shapes.Clone() as IShape[];
+        IShape[] shapesArray = (IShape[])shapes.Clone();
         Array.Sort(shapesArray, new ShapePerimeterComparer());
 
         return shapesArray[^2];
@@ -38,7 +38,7 @@ public class Program
 
     private static IShape GetLargestAreaShape(IShape[] shapes)
     {
-        IShape[] shapesArray = shapes.Clone() as IShape[];
+        IShape[] shapesArray = (IShape[])shapes.Clone();
         Array.Sort(shapesArray, new ShapeAreaComparer());
 
         return shapesArray[^1];
