@@ -1,23 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace ArrayListHomeTask
 {
     public static class ListUtils
     {
-        public static List<string> GetFileLinesList(this FileInfo file)
+        public static List<string> GetFileLinesList(FileInfo file)
         {
             var lines = new List<string>();
 
             if (!file.Exists)
             {
-                return lines;
+                throw new FileNotFoundException("Файл не найден", file.Name);
             }
 
             using var reader = new StreamReader(file.FullName);
 
-            while (reader.ReadLine() is { } line)
+            var line = string.Empty;
+            while ((line = reader.ReadLine()) != null)
             {
                 lines.Add(line);
             }
@@ -25,9 +26,14 @@ namespace ArrayListHomeTask
             return lines;
         }
 
-        public static List<int> RemoveEvenNumbers(this List<int> list)
+        public static List<int> RemoveEvenNumbers(List<int> list)
         {
-            for (int i = 0; i < list.Count; i++)
+            if (list == null)
+            {
+                throw new ArgumentNullException(nameof(list), "List не должен быть равен null");
+            }
+
+            for (var i = 0; i < list.Count; i++)
             {
                 if (list[i] % 2 == 0)
                 {
@@ -39,20 +45,24 @@ namespace ArrayListHomeTask
             return list;
         }
 
-        public static List<int> GetNotRepeatingNumbersList(this List<int> list)
+        public static List<int> GetNotRepeatingNumbersList(List<int> list)
         {
-            var resultList = new List<int>();
-
-            for (int i = 0; i < list.Count; i++)
+            if (list == null)
             {
-                if (!resultList.Contains(list[i]))
+                throw new ArgumentNullException(nameof(list), "List не должен быть равен null");
+            }
+
+            var resultList = new List<int>(list.Count);
+
+            foreach (var number in list)
+            {
+                if (!resultList.Contains(number))
                 {
-                    resultList.Add(list[i]);
+                    resultList.Add(number);
                 }
             }
 
             return resultList;
-            // return list.Distinct().ToList();
         }
     }
 }

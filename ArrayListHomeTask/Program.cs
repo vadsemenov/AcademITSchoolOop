@@ -8,7 +8,7 @@ namespace ArrayListHomeTask
     {
         static void Main(string[] args)
         {
-            var textFileLines = new FileInfo("..\\..\\1.txt").GetFileLinesList();
+            var textFileLines = ListUtils.GetFileLinesList(new FileInfo("..\\..\\1.txt"));
 
             Console.WriteLine("Содержимое файла:");
             foreach (var line in textFileLines)
@@ -16,10 +16,10 @@ namespace ArrayListHomeTask
                 Console.WriteLine(line);
             }
 
-            var list = new List<int>() { 1, 5, 2, 1, 3, 5 }.RemoveEvenNumbers();
+            var list = ListUtils.RemoveEvenNumbers(new List<int> { 1, 5, 2, 1, 3, 5 });
             Console.WriteLine("Список после удаления четных чисел: " + string.Join(" ", list));
 
-            Console.WriteLine("Список после удаления повторяющихсял чисел: " + string.Join(" ", list.GetNotRepeatingNumbersList()));
+            Console.WriteLine("Список после удаления повторяющихся чисел: " + string.Join(" ", ListUtils.GetNotRepeatingNumbersList(list)));
 
             Console.Read();
         }
