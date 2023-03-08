@@ -15,34 +15,46 @@ namespace ArrayListHomeTask
                 throw new FileNotFoundException("Файл не найден", file.Name);
             }
 
-            using var reader = new StreamReader(file.FullName);
-
-            var line = string.Empty;
-            while ((line = reader.ReadLine()) != null)
+            try
             {
-                lines.Add(line);
+                using var reader = new StreamReader(file.FullName);
+
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    lines.Add(line);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
 
             return lines;
         }
 
-        public static List<int> RemoveEvenNumbers(List<int> list)
+        public static void RemoveEvenNumbers(List<int> list)
         {
             if (list == null)
             {
                 throw new ArgumentNullException(nameof(list), "List не должен быть равен null");
             }
 
-            for (var i = 0; i < list.Count; i++)
+            try
             {
-                if (list[i] % 2 == 0)
+                for (var i = 0; i < list.Count; i++)
                 {
-                    list.RemoveAt(i);
-                    i--;
+                    if (list[i] % 2 == 0)
+                    {
+                        list.RemoveAt(i);
+                        i--;
+                    }
                 }
             }
-
-            return list;
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         public static List<int> GetNotRepeatingNumbersList(List<int> list)
@@ -54,12 +66,19 @@ namespace ArrayListHomeTask
 
             var resultList = new List<int>(list.Count);
 
-            foreach (var number in list)
+            try
             {
-                if (!resultList.Contains(number))
+                foreach (var number in list)
                 {
-                    resultList.Add(number);
+                    if (!resultList.Contains(number))
+                    {
+                        resultList.Add(number);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
 
             return resultList;
