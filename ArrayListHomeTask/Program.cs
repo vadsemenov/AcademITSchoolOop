@@ -8,18 +8,30 @@ namespace ArrayListHomeTask
     {
         static void Main(string[] args)
         {
-            var textFileLines = ListUtils.GetFileLinesList(new FileInfo("..\\..\\1.txt"));
+            var file = new FileInfo("..\\..\\1.txt");
 
-            Console.WriteLine("Содержимое файла:");
-            foreach (var line in textFileLines)
+            try
             {
-                Console.WriteLine(line);
+                var textFileLines = ListUtils.GetFileLinesList(file);
+
+                Console.WriteLine("Содержимое файла:");
+                foreach (var line in textFileLines)
+                {
+                    Console.WriteLine(line);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
 
-            var list = ListUtils.RemoveEvenNumbers(new List<int> { 1, 5, 2, 1, 3, 5 });
+            var list = new List<int> { 1, 5, 2, 1, 3, 5 };
+
+            ListUtils.RemoveEvenNumbers(list);
             Console.WriteLine("Список после удаления четных чисел: " + string.Join(" ", list));
 
-            Console.WriteLine("Список после удаления повторяющихся чисел: " + string.Join(" ", ListUtils.GetNotRepeatingNumbersList(list)));
+            Console.WriteLine("Список после удаления повторяющихся чисел: " +
+                              string.Join(" ", ListUtils.GetNotRepeatingNumbersList(list)));
 
             Console.Read();
         }
