@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphTask", "GraphTask\Grap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvTask", "CsvTask\CsvTask.csproj", "{9ADF5A58-C8D5-4625-878F-910F5FEAF73C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemperatureTask", "TemperatureTask\TemperatureTask.csproj", "{9BD617FE-F5C9-49FF-ABD2-F2CE6E9708CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{9ADF5A58-C8D5-4625-878F-910F5FEAF73C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9ADF5A58-C8D5-4625-878F-910F5FEAF73C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9ADF5A58-C8D5-4625-878F-910F5FEAF73C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BD617FE-F5C9-49FF-ABD2-F2CE6E9708CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BD617FE-F5C9-49FF-ABD2-F2CE6E9708CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BD617FE-F5C9-49FF-ABD2-F2CE6E9708CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BD617FE-F5C9-49FF-ABD2-F2CE6E9708CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
