@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace HashTableTask
@@ -8,27 +9,26 @@ namespace HashTableTask
     public class HashTable<T> : ICollection<T>
     {
         private const int DefaultCapacity = 10;
+
         private readonly List<T>[] _lists;
-        private int _size;
-        private static int _modCount;
+        private int _modCount;
 
         public HashTable()
         {
             _lists = new List<T>[DefaultCapacity];
         }
 
-        public HashTable(int arrayLength)
+        public HashTable(int capacity)
         {
-            if (arrayLength < 0)
+            if (capacity <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(arrayLength),
-                    "Размер таблицы должен быть более или равен нулю!");
+                throw new ArgumentOutOfRangeException(nameof(capacity), $"Размер таблицы должен быть более нуля, сейчас равен {capacity}!");
             }
 
-            _lists = new List<T>[arrayLength];
+            _lists = new List<T>[capacity];
         }
 
-        public int Count => _size;
+        public int Count { get; private set; }
 
         public bool IsReadOnly => false;
 
@@ -51,7 +51,7 @@ namespace HashTableTask
 
         public void Clear()
         {
-            if (_size == 0)
+            if (Count == 0)
             {
                 return;
             }
@@ -66,7 +66,7 @@ namespace HashTableTask
 
             _modCount++;
 
-            _size = 0;
+            Count = 0;
         }
 
         public void Add(T item)
@@ -78,7 +78,7 @@ namespace HashTableTask
                 _lists[index] = new List<T>();
             }
 
-            _size++;
+            Count++;
             _modCount++;
 
             _lists[index].Add(item);
@@ -91,7 +91,7 @@ namespace HashTableTask
             if (_lists[index] != null && _lists[index].Remove(item))
             {
                 _modCount++;
-                _size--;
+                Count--;
 
                 return true;
             }
@@ -101,7 +101,23 @@ namespace HashTableTask
 
         public IEnumerator<T> GetEnumerator()
         {
-            return new HashTableEnumerator(_modCount, _size, _lists);
+            var expectedModCount = _modCount;
+
+            foreach (var list in _lists)
+            {
+                if (list != null)
+                {
+                    foreach (var value in list)
+                    {
+                        if (expectedModCount != _modCount)
+                        {
+                            throw new InvalidOperationException("Совершено изменение во время итерации!");
+                        }
+
+                        yield return value;
+                    }
+                }
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -109,78 +125,33 @@ namespace HashTableTask
             return GetEnumerator();
         }
 
-        public void CopyTo(T[] array, int arrayIndex) => Array.Copy(_lists, 0, array, arrayIndex, _lists.Length);
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            var hashTableArray = _lists.Select(x => x.FirstOrDefault()).ToArray();
+
+            Array.Copy(hashTableArray, 0, array, arrayIndex, _lists.Length);
+        }
 
         public override string ToString()
         {
-            return new StringBuilder().Append("[ " + string.Join(" ", this) + " ]").ToString();
-        }
+            var stringBuilder = new StringBuilder();
 
-        private class HashTableEnumerator : IEnumerator<T>
-        {
-            private readonly List<T>[] _lists;
-            private readonly int _size;
-            private readonly int _expectedModCount;
+            stringBuilder.Append("[");
 
-            private int _position = -1;
-            private int _listIndex;
-            private int _elementIndex = -1;
-
-            public HashTableEnumerator(int modCount, int size, List<T>[] lists)
+            foreach (var value in this)
             {
-                _expectedModCount = modCount;
-                _size = size;
-                _lists = lists;
+                stringBuilder.Append(value);
+                stringBuilder.Append(", ");
             }
 
-            public T Current
+            if (Count > 0)
             {
-                get
-                {
-                    if (_expectedModCount != _modCount)
-                    {
-                        throw new AccessViolationException("Совершено изменение во время итерации");
-                    }
-
-                    if (_position == -1 || _position >= _size)
-                    {
-                        throw new ArgumentException("Позиция перечеслителя вне диапазона!", nameof(_position));
-                    }
-
-                    return _lists[_listIndex][_elementIndex];
-                }
+                stringBuilder.Remove(stringBuilder.Length - 2, 2);
             }
 
-            public bool MoveNext()
-            {
-                if (_position < _size - 1)
-                {
-                    while (_lists[_listIndex] == null || _lists[_listIndex].Count - 1 == _elementIndex)
-                    {
-                        _listIndex++;
-                        _elementIndex = -1;
-                    }
+            stringBuilder.Append("]");
 
-                    _elementIndex++;
-                    _position++;
-
-                    return true;
-                }
-
-                return false;
-            }
-
-            object IEnumerator.Current => Current;
-
-            public void Reset()
-            {
-                _position = -1;
-            }
-
-            public void Dispose()
-            {
-
-            }
+            return stringBuilder.ToString();
         }
     }
 }
