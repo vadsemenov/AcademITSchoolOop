@@ -29,17 +29,17 @@
         private void InitializeComponent()
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.sourceScaleComboBox = new System.Windows.Forms.ComboBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.destinationScaleComboBox = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.destinationScaleComboBox = new System.Windows.Forms.ComboBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.sourceScaleComboBox = new System.Windows.Forms.ComboBox();
             this.convertButton = new System.Windows.Forms.Button();
             this.tempratureLabel = new System.Windows.Forms.Label();
             this.valueGroupBox = new System.Windows.Forms.GroupBox();
             this.valueTextBox = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.valueGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,15 +63,28 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(592, 277);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // sourceScaleComboBox
+            // groupBox2
             // 
-            this.sourceScaleComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.sourceScaleComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.sourceScaleComboBox.FormattingEnabled = true;
-            this.sourceScaleComboBox.Location = new System.Drawing.Point(10, 23);
-            this.sourceScaleComboBox.Name = "sourceScaleComboBox";
-            this.sourceScaleComboBox.Size = new System.Drawing.Size(135, 21);
-            this.sourceScaleComboBox.TabIndex = 0;
+            this.groupBox2.Controls.Add(this.destinationScaleComboBox);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox2.Location = new System.Drawing.Point(215, 20);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(20);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(10);
+            this.groupBox2.Size = new System.Drawing.Size(161, 98);
+            this.groupBox2.TabIndex = 2;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "В шкалу";
+            // 
+            // destinationScaleComboBox
+            // 
+            this.destinationScaleComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.destinationScaleComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.destinationScaleComboBox.FormattingEnabled = true;
+            this.destinationScaleComboBox.Location = new System.Drawing.Point(10, 23);
+            this.destinationScaleComboBox.Name = "destinationScaleComboBox";
+            this.destinationScaleComboBox.Size = new System.Drawing.Size(141, 21);
+            this.destinationScaleComboBox.TabIndex = 0;
             // 
             // groupBox1
             // 
@@ -86,28 +99,15 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Из шкалы";
             // 
-            // destinationScaleComboBox
+            // sourceScaleComboBox
             // 
-            this.destinationScaleComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.destinationScaleComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.destinationScaleComboBox.FormattingEnabled = true;
-            this.destinationScaleComboBox.Location = new System.Drawing.Point(10, 23);
-            this.destinationScaleComboBox.Name = "destinationScaleComboBox";
-            this.destinationScaleComboBox.Size = new System.Drawing.Size(141, 21);
-            this.destinationScaleComboBox.TabIndex = 0;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.destinationScaleComboBox);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox2.Location = new System.Drawing.Point(215, 20);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(20);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(10);
-            this.groupBox2.Size = new System.Drawing.Size(161, 98);
-            this.groupBox2.TabIndex = 2;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "В шкалу";
+            this.sourceScaleComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sourceScaleComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.sourceScaleComboBox.FormattingEnabled = true;
+            this.sourceScaleComboBox.Location = new System.Drawing.Point(10, 23);
+            this.sourceScaleComboBox.Name = "sourceScaleComboBox";
+            this.sourceScaleComboBox.Size = new System.Drawing.Size(135, 21);
+            this.sourceScaleComboBox.TabIndex = 0;
             // 
             // convertButton
             // 
@@ -119,6 +119,7 @@
             this.convertButton.TabIndex = 3;
             this.convertButton.Text = "Ковертировать значение";
             this.convertButton.UseVisualStyleBackColor = true;
+            this.convertButton.Click += new System.EventHandler(this.convertButton_Click);
             // 
             // tempratureLabel
             // 
@@ -129,7 +130,7 @@
             this.tempratureLabel.Name = "tempratureLabel";
             this.tempratureLabel.Size = new System.Drawing.Size(190, 139);
             this.tempratureLabel.TabIndex = 4;
-            this.tempratureLabel.Text = "99.9";
+            this.tempratureLabel.Text = "0";
             this.tempratureLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // valueGroupBox
@@ -153,6 +154,7 @@
             this.valueTextBox.Name = "valueTextBox";
             this.valueTextBox.Size = new System.Drawing.Size(306, 20);
             this.valueTextBox.TabIndex = 0;
+            this.valueTextBox.Text = "0";
             // 
             // TemperatureConverterForm
             // 
@@ -167,8 +169,8 @@
             this.Text = "Перевод температуры";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
             this.valueGroupBox.ResumeLayout(false);
             this.valueGroupBox.PerformLayout();
             this.ResumeLayout(false);
