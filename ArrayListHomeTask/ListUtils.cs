@@ -8,11 +8,6 @@ namespace ArrayListHomeTask
     {
         public static List<string> GetFileLinesList(FileInfo file)
         {
-            if (!file.Exists)
-            {
-                throw new FileNotFoundException("Файл не найден", file.FullName);
-            }
-
             var lines = new List<string>();
 
             using var reader = new StreamReader(file.FullName);

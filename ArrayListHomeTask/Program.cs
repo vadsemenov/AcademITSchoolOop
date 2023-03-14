@@ -20,9 +20,13 @@ namespace ArrayListHomeTask
                     Console.WriteLine(line);
                 }
             }
+            catch (FileNotFoundException fnfe)
+            {
+                Console.WriteLine("Произошла ошибка: " + fnfe.Message);
+            }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine("Произошла ошибка: " + e.Message);
             }
 
             var list = new List<int> { 1, 5, 2, 1, 3, 5 };
