@@ -20,13 +20,13 @@ internal class Program
              {9, 10, 31}
         };
 
-        var array3 = new double[] { 2.3, 9.2, 4.6 };
-        var array4 = new double[] { 3.4, 1.5, 3.6 };
-        var array5 = new double[] { 20.8, 6.8, 3.4 };
+        var array3 = new[] { 2.3, 9.2, 4.6 };
+        var array4 = new[] { 3.4, 1.5, 3.6 };
+        var array5 = new[] { 20.8, 6.8, 3.4 };
 
         var vectors = new Vector[]
         {
-            new Vector(3),
+            new Vector(2),
             new Vector(array5),
             new Vector(3, array4),
             new Vector(array5)
@@ -58,19 +58,19 @@ internal class Program
 
         Console.WriteLine("Умножение на скаляр: " + matrix4.MultiplyByScalar(2));
 
-        Console.WriteLine("Детерминант матрицы: " + matrix3.GetMatrixDeterminant());
+        Console.WriteLine("Детерминант матрицы: " + matrix3.GetDeterminant());
 
-        Console.WriteLine("Умножение матрицы на вектор: " + matrix3.MultiplyMatrixByVector(new Vector(array3)));
+        Console.WriteLine("Умножение матрицы на вектор: " + matrix3.Multiply(new Vector(array3)));
 
-        Console.WriteLine("Сложение матриц: " + matrix2.AddMatrix(matrix3));
+        Console.WriteLine("Сложение матриц: " + matrix2.Add(matrix3));
 
-        Console.WriteLine("Вычитание матриц: " + matrix2.SubtractMatrix(matrix3));
+        Console.WriteLine("Вычитание матриц: " + matrix2.Subtract(matrix3));
 
-        Console.WriteLine("Сложение матриц: " + Matrix.GetMatrixSum(matrix2, matrix3));
+        Console.WriteLine("Сложение матриц: " + Matrix.GetSum(matrix2, matrix3));
 
-        Console.WriteLine("Вычитание матриц: " + Matrix.GetMatrixDifference(matrix2, matrix3));
+        Console.WriteLine("Вычитание матриц: " + Matrix.GetDifference(matrix2, matrix3));
 
-        Console.WriteLine("Умножение матриц: " + Matrix.GetMatrixProduct(matrix2, matrix3));
+        Console.WriteLine("Умножение матриц: " + Matrix.GetProduct(matrix2, matrix3));
 
         Console.Read();
     }

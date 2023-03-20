@@ -49,6 +49,25 @@ public class Vector
         Array.Copy(components, _components, minSize);
     }
 
+    public Vector(int size, Vector vector)
+    {
+        if (size <= 0)
+        {
+            throw new ArgumentException("Размерность должна быть больше 0. Текущее значение равно: " + size, nameof(size));
+        }
+
+        var maxSize = Math.Max(size, vector._components.Length);
+
+        _components = new double[maxSize];
+
+        Array.Copy(vector._components, _components, vector._components.Length);
+    }
+
+    public double[] GetComponents()
+    {
+        return (double[])_components.Clone();
+    }
+
     public int GetSize()
     {
         return _components.Length;
