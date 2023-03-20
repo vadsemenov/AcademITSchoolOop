@@ -37,6 +37,5 @@ namespace GraphTask
         {
             Console.WriteLine($"Вершина {currentVertex} посещена");
         }
-
     }
 }
