@@ -5,149 +5,130 @@ namespace GraphTask
 {
     public class Graph
     {
-        private readonly int[,] _adjacencyArray;
+        private readonly int[,] _adjacencyMatrix;
         private readonly int _size;
 
-        public Graph(int[,] adjacencyArray)
+        public Graph(int[,] adjacencyMatrix)
         {
-            var rowCount = adjacencyArray.GetLength(0);
-            var columnCount = adjacencyArray.GetLength(1);
+            var rowsCount = adjacencyMatrix.GetLength(0);
+            var columnsCount = adjacencyMatrix.GetLength(1);
 
-            if (rowCount != columnCount)
+            if (rowsCount != columnsCount)
             {
                 throw new ArgumentException(
-                    "Количество строк в матрице смежности должно быть равно количеству стобцов!",
-                    nameof(adjacencyArray));
+                    "Количество строк в матрице смежности должно быть равно количеству столбцов \r\n" +
+                    $"Сейчас количество строк = {rowsCount}, количество столбцов = {columnsCount}",
+                    nameof(adjacencyMatrix));
             }
 
-            _adjacencyArray = adjacencyArray;
-            _size = adjacencyArray.GetLength(0);
+            _adjacencyMatrix = adjacencyMatrix;
+            _size = adjacencyMatrix.GetLength(0);
         }
 
-        public void BreadthFirstSearch()
+        public void BreadthFirstSearch(Action<int> action)
         {
             var queue = new Queue<int>();
 
             var visited = new bool[_size];
 
-            var visitedVertexCount = 0;
-
-            var nextIndexInVisitedArray = 0;
-
-            while (visitedVertexCount < _size)
+            for (var i = 0; i < _size; i++)
             {
-                for (var i = nextIndexInVisitedArray; i < _size; i++)
+                if (visited[i])
                 {
-                    if (!visited[i])
-                    {
-                        queue.Enqueue(i);
-                        nextIndexInVisitedArray++;
-                        break;
-                    }
+                    continue;
                 }
+
+                queue.Enqueue(i);
 
                 while (queue.Count > 0)
                 {
                     var currentVertex = queue.Dequeue();
 
-                    if (!visited[currentVertex])
+                    if (visited[currentVertex])
                     {
-                        for (var i = 0; i < _size; i++)
+                        continue;
+                    }
+
+                    action.Invoke(currentVertex);
+
+                    visited[currentVertex] = true;
+
+                    for (var j = 0; j < _size; j++)
+                    {
+                        if (_adjacencyMatrix[currentVertex, j] != 0)
                         {
-                            var element = _adjacencyArray[currentVertex, i];
-
-                            if (element != 0 && !visited[i])
-                            {
-                                queue.Enqueue(i);
-                            }
+                            queue.Enqueue(j);
                         }
-
-                        Console.WriteLine($"Вершина {currentVertex} посещена");
-                        visited[currentVertex] = true;
-
-                        visitedVertexCount++;
                     }
                 }
             }
         }
 
-        public void DepthFirstSearch()
+        public void DepthFirstSearch(Action<int> action)
         {
             var stack = new Stack<int>();
 
             var visited = new bool[_size];
 
-            var visitedVertexCount = 0;
-
-            var nextIndexInVisitedArray = 0;
-
-            while (visitedVertexCount < _size)
+            for (var i = 0; i < _size; i++)
             {
-                for (var i = nextIndexInVisitedArray; i < _size; i++)
+                if (visited[i])
                 {
-                    if (!visited[i])
-                    {
-                        stack.Push(i);
-
-                        nextIndexInVisitedArray++;
-
-                        break;
-                    }
+                    continue;
                 }
+
+                stack.Push(i);
 
                 while (stack.Count > 0)
                 {
                     var currentVertex = stack.Pop();
 
-                    if (!visited[currentVertex])
+                    if (visited[currentVertex])
                     {
-                        for (var i = _size - 1; i >= 0; i--)
+                        continue;
+                    }
+
+                    action.Invoke(currentVertex);
+
+                    visited[currentVertex] = true;
+
+                    for (var j = _size - 1; j >= 0; j--)
+                    {
+                        if (_adjacencyMatrix[currentVertex, j] != 0)
                         {
-                            var element = _adjacencyArray[currentVertex, i];
-
-                            if (element != 0 && !visited[i])
-                            {
-                                stack.Push(i);
-                            }
+                            stack.Push(j);
                         }
-
-                        Console.WriteLine($"Вершина {currentVertex} посещена");
-                        visited[currentVertex] = true;
-
-                        visitedVertexCount++;
                     }
                 }
             }
         }
 
-        public void DepthFirstSearchRecursive()
+        public void DepthFirstSearchRecursive(Action<int> action)
         {
             var visited = new bool[_size];
 
             for (var i = 0; i < _size; i++)
             {
-                Visit(i, visited);
+                Visit(i, visited, action);
             }
         }
 
-        private void Visit(int vertexIndex, bool[] visited)
+        private void Visit(int vertexIndex, bool[] visited, Action<int> action)
         {
             if (visited[vertexIndex])
             {
                 return;
             }
 
-            Console.WriteLine($"Вершина {vertexIndex} посещена");
+            action.Invoke(vertexIndex);
 
             visited[vertexIndex] = true;
 
             for (var i = 0; i < _size; i++)
             {
-                var element = _adjacencyArray[vertexIndex, i];
-
-                if (element != 0 && !visited[i])
+                if (_adjacencyMatrix[vertexIndex, i] != 0)
                 {
-                    Visit(i, visited);
+                    Visit(i, visited, action);
                 }
             }
         }
