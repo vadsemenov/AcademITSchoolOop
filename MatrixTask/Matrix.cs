@@ -39,18 +39,18 @@ public class Matrix
                 nameof(array));
         }
 
-        this._rows = new Vector[arrayRowsAmount];
+        _rows = new Vector[arrayRowsAmount];
 
-        for (var i = 0; i < arrayColumnsAmount; i++)
+        for (var i = 0; i < arrayRowsAmount; i++)
         {
-            var arrayComponents = new double[array.GetLength(1)];
+            var arrayRow = new double[array.GetLength(1)];
 
             for (var j = 0; j < arrayColumnsAmount; j++)
             {
-                arrayComponents[j] = array[i, j];
+                arrayRow[j] = array[i, j];
             }
 
-            this._rows[i] = new Vector(arrayComponents);
+            _rows[i] = new Vector(arrayRow);
         }
     }
 
@@ -61,7 +61,7 @@ public class Matrix
             throw new ArgumentException("Размер массива векторов должен быть больше 0", nameof(vectors));
         }
 
-        this._rows = vectors;
+        _rows = vectors;
     }
 
     public int GetRowsAmount()
