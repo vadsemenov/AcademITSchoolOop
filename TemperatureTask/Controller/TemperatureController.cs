@@ -36,7 +36,7 @@ namespace TemperatureTask.Controller
                 }
                 else
                 {
-                    throw new ArgumentException("Введеное значение не является числом!", nameof(value));
+                    throw new ArgumentException("Введеное значение не является числом!");
                 }
 
             }

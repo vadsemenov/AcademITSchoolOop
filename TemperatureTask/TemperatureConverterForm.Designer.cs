@@ -117,7 +117,7 @@
             this.convertButton.Name = "convertButton";
             this.convertButton.Size = new System.Drawing.Size(156, 47);
             this.convertButton.TabIndex = 3;
-            this.convertButton.Text = "Ковертировать значение";
+            this.convertButton.Text = "Конвертировать значение";
             this.convertButton.UseVisualStyleBackColor = true;
             this.convertButton.Click += new System.EventHandler(this.convertButton_Click);
             // 
