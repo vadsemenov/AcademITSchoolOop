@@ -34,9 +34,7 @@ public class CsvToHtmlConverter
                 needToCloseCurrentTrTagAndOpenNewTrTag = false;
             }
 
-            var i = 0;
-
-            while (i < line.Length)
+            for (int i = 0; i < line.Length; i++)
             {
                 var currentSymbol = line[i];
 
@@ -103,8 +101,6 @@ public class CsvToHtmlConverter
                         }
                     }
                 }
-
-                i++;
             }
         }
 
