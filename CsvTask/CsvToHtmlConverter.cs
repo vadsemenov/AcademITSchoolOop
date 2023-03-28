@@ -20,6 +20,7 @@ public class CsvToHtmlConverter
         var needToCloseCurrentTrTagAndOpenNewTrTag = false;
 
         string line;
+
         while ((line = reader.ReadLine()) != null)
         {
             if (isInQuotesToken && line != "")
@@ -56,7 +57,7 @@ public class CsvToHtmlConverter
                             return;
                         }
 
-                        if (nextSymbolIndex >= line.Length && reader.Peek() >= 0)
+                        if (nextSymbolIndex >= line.Length)
                         {
                             needToCloseCurrentTrTagAndOpenNewTrTag = true;
                             isInQuotesToken = false;

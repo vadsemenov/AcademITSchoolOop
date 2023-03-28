@@ -31,13 +31,13 @@ namespace CsvTask
             {
                 csvToHtmlConverter.ConvertCsvToHtml(args[0], args[1]);
             }
-            catch (FileNotFoundException exp)
+            catch (FileNotFoundException e)
             {
-                Console.WriteLine(exp.Message);
+                Console.WriteLine(e.Message);
             }
-            catch (Exception exp)
+            catch (Exception e)
             {
-                Console.WriteLine(exp.Message);
+                Console.WriteLine(e.Message);
             }
         }
 
