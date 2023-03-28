@@ -8,122 +8,115 @@ public class CsvToHtmlConverter
     {
         if (!File.Exists(inputCsvFileName))
         {
-            return;
+            throw new FileNotFoundException("Исходный файл не найден!", inputCsvFileName);
         }
 
-        try
+        using var reader = new StreamReader(inputCsvFileName);
+        using var writer = new StreamWriter(outputHtmlFileName);
+
+        WriteHtmlDocumentStartingTags(writer, outputHtmlFileName);
+
+        var isInQuotesToken = false;
+        var needToCloseCurrentTrTagAndOpenNewTrTag = false;
+
+        string line;
+        while ((line = reader.ReadLine()) != null)
         {
-            using var reader = new StreamReader(inputCsvFileName);
-            using var writer = new StreamWriter(outputHtmlFileName);
-
-            SetHtmlDocumentStartingTags(writer, outputHtmlFileName);
-
-            var isInQuotesToken = false;
-            var needToCloseCurrentTrTagAndOpenNewTrTag = false;
-
-            string line;
-            while ((line = reader.ReadLine()) != null)
+            if (isInQuotesToken && line != "")
             {
-                if (isInQuotesToken && !line.Equals(""))
+                writer.Write("<br>");
+            }
+
+            if (needToCloseCurrentTrTagAndOpenNewTrTag && line != "")
+            {
+                WriteCurrentTrAndOpenNewTr(writer);
+                needToCloseCurrentTrTagAndOpenNewTrTag = false;
+            }
+
+            var i = 0;
+
+            while (i < line.Length)
+            {
+                var currentSymbol = line[i];
+
+                if (isInQuotesToken)
                 {
-                    writer.Write("<br>");
-                }
-
-                if (needToCloseCurrentTrTagAndOpenNewTrTag && !line.Equals(""))
-                {
-                    CloseCurrentTrTagAndOpenNewTrTag(writer);
-                    needToCloseCurrentTrTagAndOpenNewTrTag = false;
-                }
-
-                var i = 0;
-
-                while (i < line.Length)
-                {
-                    var currentSymbol = line[i];
-
-                    if (isInQuotesToken)
+                    if (currentSymbol != '"')
                     {
-                        if (currentSymbol != '"')
+                        WriteCurrentSymbol(writer, currentSymbol);
+                    }
+                    else
+                    {
+                        var nextSymbolIndex = i + 1;
+
+                        if (nextSymbolIndex >= line.Length && reader.Peek() < 0)
                         {
-                            WriteCurrentSymbol(currentSymbol, writer);
+                            WriteHtmlDocumentEndingTags(writer);
+
+                            return;
+                        }
+
+                        if (nextSymbolIndex >= line.Length && reader.Peek() >= 0)
+                        {
+                            needToCloseCurrentTrTagAndOpenNewTrTag = true;
+                            isInQuotesToken = false;
+                        }
+                        else if (line[nextSymbolIndex] == ',')
+                        {
+                            WriteCurrentTdAndOpenNewTd(writer);
+                            isInQuotesToken = false;
+                            i++;
+
+                            if (i + 1 == line.Length)
+                            {
+                                WriteCurrentTrAndOpenNewTr(writer);
+                            }
                         }
                         else
                         {
-                            var nextSymbolIndex = i + 1;
+                            writer.Write(currentSymbol);
+                            i++;
+                        }
+                    }
+                }
+                else
+                {
+                    if (currentSymbol != '"')
+                    {
+                        if (currentSymbol == ',')
+                        {
+                            WriteCurrentTdAndOpenNewTd(writer);
+                        }
+                        else
+                        {
+                            WriteCurrentSymbol(writer, currentSymbol);
+                        }
 
-                            if (nextSymbolIndex >= line.Length && reader.Peek() < 0)
-                            {
-                                SetHtmlDocumentEndingTags(writer);
-
-                                return;
-                            }
-
-                            if (nextSymbolIndex >= line.Length && reader.Peek() >= 0)
-                            {
-                                needToCloseCurrentTrTagAndOpenNewTrTag = true;
-                                isInQuotesToken = false;
-                            }
-                            else if (line[nextSymbolIndex] == ',')
-                            {
-                                CloseCurrentTdTagAndOpenNewTdTag(writer);
-                                isInQuotesToken = false;
-                                i++;
-
-                                if (i + 1 == line.Length)
-                                {
-                                    CloseCurrentTrTagAndOpenNewTrTag(writer);
-                                }
-                            }
-                            else
-                            {
-                                writer.Write(currentSymbol);
-                                i++;
-                            }
+                        if (i + 1 == line.Length && reader.Peek() >= 0)
+                        {
+                            needToCloseCurrentTrTagAndOpenNewTrTag = true;
                         }
                     }
                     else
                     {
-                        if (currentSymbol != '"')
-                        {
-                            if (currentSymbol == ',')
-                            {
-                                CloseCurrentTdTagAndOpenNewTdTag(writer);
-                            }
-                            else
-                            {
-                                WriteCurrentSymbol(currentSymbol, writer);
-                            }
-
-                            if (i + 1 == line.Length && reader.Peek() >= 0)
-                            {
-                                needToCloseCurrentTrTagAndOpenNewTrTag = true;
-                            }
-                        }
-                        else
-                        {
-                            isInQuotesToken = true;
-                        }
+                        isInQuotesToken = true;
                     }
-
-                    i++;
                 }
-            }
 
-            SetHtmlDocumentEndingTags(writer);
+                i++;
+            }
         }
-        catch (Exception exp)
-        {
-            Console.WriteLine(exp);
-        }
+
+        WriteHtmlDocumentEndingTags(writer);
     }
 
-    private void CloseCurrentTdTagAndOpenNewTdTag(StreamWriter writer)
+    private static void WriteCurrentTdAndOpenNewTd(StreamWriter writer)
     {
         writer.WriteLine("</td>");
         writer.Write("\t\t\t\t<td>");
     }
 
-    private void CloseCurrentTrTagAndOpenNewTrTag(StreamWriter writer)
+    private static void WriteCurrentTrAndOpenNewTr(StreamWriter writer)
     {
         writer.WriteLine("</td>");
         writer.WriteLine("\t\t\t</tr>");
@@ -131,7 +124,7 @@ public class CsvToHtmlConverter
         writer.Write("\t\t\t\t<td>");
     }
 
-    private void SetHtmlDocumentStartingTags(StreamWriter writer, string title)
+    private static void WriteHtmlDocumentStartingTags(StreamWriter writer, string title)
     {
         writer.WriteLine("<!DOCTYPE html>");
         writer.WriteLine("<html>");
@@ -145,7 +138,7 @@ public class CsvToHtmlConverter
         writer.Write("\t\t\t\t<td>");
     }
 
-    private void SetHtmlDocumentEndingTags(StreamWriter writer)
+    private static void WriteHtmlDocumentEndingTags(StreamWriter writer)
     {
         writer.WriteLine("</td>");
         writer.WriteLine("\t\t\t</tr>");
@@ -154,7 +147,7 @@ public class CsvToHtmlConverter
         writer.Write("</html>");
     }
 
-    private void WriteCurrentSymbol(char currentSymbol, StreamWriter writer)
+    private static void WriteCurrentSymbol(StreamWriter writer, char currentSymbol)
     {
         switch (currentSymbol)
         {
