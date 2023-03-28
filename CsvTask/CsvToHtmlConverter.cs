@@ -81,7 +81,11 @@ public class CsvToHtmlConverter
                 }
                 else
                 {
-                    if (currentSymbol != '"')
+                    if (currentSymbol == '"')
+                    {
+                        isInQuotesToken = true;
+                    }
+                    else
                     {
                         if (currentSymbol == ',')
                         {
@@ -97,10 +101,6 @@ public class CsvToHtmlConverter
                             needToCloseCurrentTrTagAndOpenNewTrTag = true;
                         }
                     }
-                    else
-                    {
-                        isInQuotesToken = true;
-                    }
                 }
 
                 i++;
@@ -113,37 +113,37 @@ public class CsvToHtmlConverter
     private static void WriteCurrentTdAndOpenNewTd(StreamWriter writer)
     {
         writer.WriteLine("</td>");
-        writer.Write("\t\t\t\t<td>");
+        writer.Write("\t\t\t<td>");
     }
 
     private static void WriteCurrentTrAndOpenNewTr(StreamWriter writer)
     {
         writer.WriteLine("</td>");
-        writer.WriteLine("\t\t\t</tr>");
-        writer.WriteLine("\t\t\t<tr>");
-        writer.Write("\t\t\t\t<td>");
+        writer.WriteLine("\t\t</tr>");
+        writer.WriteLine("\t\t<tr>");
+        writer.Write("\t\t\t<td>");
     }
 
     private static void WriteHtmlDocumentStartingTags(StreamWriter writer, string title)
     {
         writer.WriteLine("<!DOCTYPE html>");
         writer.WriteLine("<html>");
-        writer.WriteLine("\t<head>");
-        writer.WriteLine("\t\t<meta charset=\"UTF-8\">");
-        writer.WriteLine("\t\t<title>" + title + "</title>");
-        writer.WriteLine("\t</head>");
-        writer.WriteLine("\t<body>");
-        writer.WriteLine("\t\t<table border=\"1\">");
-        writer.WriteLine("\t\t\t<tr>");
-        writer.Write("\t\t\t\t<td>");
+        writer.WriteLine("<head>");
+        writer.WriteLine("<meta charset=\"UTF-8\">");
+        writer.WriteLine("<title>" + title + "</title>");
+        writer.WriteLine("</head>");
+        writer.WriteLine("<body>");
+        writer.WriteLine("\t<table border=\"1\">");
+        writer.WriteLine("\t\t<tr>");
+        writer.Write("\t\t\t<td>");
     }
 
     private static void WriteHtmlDocumentEndingTags(StreamWriter writer)
     {
         writer.WriteLine("</td>");
-        writer.WriteLine("\t\t\t</tr>");
-        writer.WriteLine("\t\t</table>");
-        writer.WriteLine("\t</body>");
+        writer.WriteLine("\t\t</tr>");
+        writer.WriteLine("\t</table>");
+        writer.WriteLine("</body>");
         writer.Write("</html>");
     }
 
