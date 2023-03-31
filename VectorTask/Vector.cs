@@ -42,25 +42,11 @@ public class Vector
             throw new ArgumentException("Размерность должна быть больше 0. Текущее значение равно: " + size, nameof(components));
         }
 
-        var minSize = Math.Min(size, components.Length);
+        _components = new double[size];
 
-        _components = new double[minSize];
+        var arraySize = Math.Min(size, components.Length);
 
-        Array.Copy(components, _components, minSize);
-    }
-
-    public Vector(int size, Vector vector)
-    {
-        if (size <= 0)
-        {
-            throw new ArgumentException("Размерность должна быть больше 0. Текущее значение равно: " + size, nameof(size));
-        }
-
-        var maxSize = Math.Max(size, vector._components.Length);
-
-        _components = new double[maxSize];
-
-        Array.Copy(vector._components, _components, vector._components.Length);
+        Array.Copy(components, _components, arraySize);
     }
 
     public double[] GetComponents()

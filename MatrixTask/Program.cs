@@ -44,7 +44,7 @@ internal class Program
         var matrix4 = new Matrix(vectors);
         Console.WriteLine("Конструктор из вектора строк: " + matrix4);
 
-        Console.WriteLine("Размер матрицы: " + matrix1.GetRowsAmount() + "х" + matrix1.GetColumnsAmount());
+        Console.WriteLine("Размер матрицы: " + matrix1.GetRowsAmount + "х" + matrix1.GetColumnsAmount);
 
         Console.WriteLine("Получение вектора-строки по индексу: " + matrix4.GetRowByIndex(2));
 
