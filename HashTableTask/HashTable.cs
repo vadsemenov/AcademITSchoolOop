@@ -161,18 +161,7 @@ namespace HashTableTask
             var stringBuilder = new StringBuilder();
 
             stringBuilder.Append("[");
-
-            foreach (var value in this)
-            {
-                stringBuilder.Append(value);
-                stringBuilder.Append(", ");
-            }
-
-            if (Count > 0)
-            {
-                stringBuilder.Remove(stringBuilder.Length - 2, 2);
-            }
-
+            stringBuilder.AppendJoin(", ", this);
             stringBuilder.Append("]");
 
             return stringBuilder.ToString();
