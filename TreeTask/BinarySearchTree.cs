@@ -1,32 +1,22 @@
-﻿namespace TreeTask
+﻿using System.Xml.Linq;
+
+namespace TreeTask
 {
     internal class BinarySearchTree<T>
     {
         private Node<T> _root;
         private readonly IComparer<T> _comparer;
 
-        public int Count => WalkSubTreeInDepth(_root);
+        public int Count { get; private set; }
 
         public BinarySearchTree()
         {
-
         }
 
-        public BinarySearchTree(Comparer<T> comparer)
+        public BinarySearchTree(IComparer<T> comparer)
         {
             _comparer = comparer;
         }
-
-        // public BinarySearchTree(T rootValue)
-        // {
-        //     _root = new Node<T>(rootValue);
-        // }
-        //
-        // public BinarySearchTree(T rootValue, Comparer<T> comparer)
-        // {
-        //     _root = new Node<T>(rootValue);
-        //     _comparer = comparer;
-        // }
 
         private int Compare(T value1, T value2)
         {
@@ -34,31 +24,29 @@
             {
                 return _comparer.Compare(value1, value2);
             }
+
+            if (value1 == null && value2 == null)
+            {
+                return 0;
+            }
+
+            if (value1 == null)
+            {
+                return -1;
+            }
+
+            if (value2 == null)
+            {
+                return 1;
+            }
+
+            if (value1 is IComparable<T> comparableValue1)
+            {
+                return comparableValue1.CompareTo(value2);
+            }
             else
             {
-                if (value1 == null && value2 != null)
-                {
-                    return -1;
-                }
-
-                if (value1 != null && value2 == null)
-                {
-                    return 1;
-                }
-
-                if (value1 == null)
-                {
-                    return 0;
-                }
-
-                if (value1 is IComparable<T> comparableValue1)
-                {
-                    return comparableValue1.CompareTo(value2);
-                }
-                else
-                {
-                    throw new ArgumentException($"Тип {typeof(T).Name} не реализует IComparable!", typeof(T).Name);
-                }
+                throw new ArgumentException($"Тип {typeof(T).Name} не реализует IComparable!", typeof(T).Name);
             }
         }
 
@@ -67,6 +55,7 @@
             if (_root == null)
             {
                 _root = new Node<T>(value);
+                Count++;
                 return;
             }
 
@@ -80,11 +69,14 @@
 
             while (true)
             {
-                if (Compare(currentTempNode.Value, value) > 0)
+                var compareResult = Compare(currentTempNode.Value, value);
+
+                if (compareResult > 0)
                 {
                     if (currentTempNode.Left == null)
                     {
                         currentTempNode.Left = newNode;
+                        Count++;
                         return newNode;
                     }
 
@@ -93,44 +85,18 @@
                     continue;
                 }
 
-                if (Compare(currentTempNode.Value, value) <= 0)
+                if (compareResult <= 0)
                 {
                     if (currentTempNode.Right == null)
                     {
                         currentTempNode.Right = newNode;
+                        Count++;
                         return newNode;
                     }
 
                     currentTempNode = currentTempNode.Right;
                 }
             }
-        }
-
-        private Node<T> InsertNodeRecursive(T value, Node<T> parentNode)
-        {
-            if (Compare(parentNode.Value, value) > 0)
-            {
-                if (parentNode.Left == null)
-                {
-                    parentNode.Left = new Node<T>(value);
-                    return parentNode.Left;
-                }
-
-                return InsertNodeRecursive(value, parentNode.Left);
-            }
-
-            if (Compare(parentNode.Value, value) <= 0)
-            {
-                if (parentNode.Right == null)
-                {
-                    parentNode.Right = new Node<T>(value);
-                    return parentNode.Right;
-                }
-
-                return InsertNodeRecursive(value, parentNode.Right);
-            }
-
-            return parentNode;
         }
 
         public bool Search(T value)
@@ -145,146 +111,123 @@
 
         private (Node<T> parentNode, Node<T> currentNode) SearchNode(T value, Node<T> parentNode, Node<T> node)
         {
-            var parentTempNode = parentNode;
-            var currentTempNode = node;
+            var currnetNodeParent = parentNode;
+            var currentNode = node;
 
             while (true)
             {
-                if (Compare(currentTempNode.Value, value) == 0)
+                var compareResult = Compare(currentNode.Value, value);
+
+                if (compareResult == 0)
                 {
-                    return (parentTempNode, currentTempNode);
+                    return (currnetNodeParent, currentNode);
                 }
 
-                if (Compare(currentTempNode.Value, value) > 0)
+                if (compareResult > 0)
                 {
-                    if (currentTempNode.Left == null)
+                    if (currentNode.Left == null)
                     {
-                        return (currentTempNode, null);
+                        return (currentNode, null);
                     }
 
-                    parentTempNode = currentTempNode;
-                    currentTempNode = currentTempNode.Left;
+                    currnetNodeParent = currentNode;
+                    currentNode = currentNode.Left;
 
                     continue;
                 }
 
-                if (Compare(currentTempNode.Value, value) < 0)
+                if (compareResult < 0)
                 {
-                    if (currentTempNode.Right == null)
+                    if (currentNode.Right == null)
                     {
-                        return (currentTempNode, null);
+                        return (currentNode, null);
                     }
 
-                    parentTempNode = currentTempNode;
-                    currentTempNode = currentTempNode.Right;
+                    currnetNodeParent = currentNode;
+                    currentNode = currentNode.Right;
                 }
             }
         }
 
-        public void WalkInDepthRecursive()
+        public void WalkInDepthRecursive(Action<T> action)
         {
             if (_root == null)
             {
                 return;
             }
 
-            WalkSubTreeInDepthRecursive(_root);
+            WalkSubTreeInDepthRecursive(_root, action);
         }
 
-        private void WalkSubTreeInDepthRecursive(Node<T> node)
+        private static void WalkSubTreeInDepthRecursive(Node<T> node, Action<T> action)
         {
-            Console.Write(node.Value + " ");
-
-            if (node.Left == null && node.Right == null)
-            {
-                return;
-            }
+            action.Invoke(node.Value);
 
             if (node.Left != null)
             {
-                WalkSubTreeInDepthRecursive(node.Left);
+                WalkSubTreeInDepthRecursive(node.Left, action);
             }
 
             if (node.Right != null)
             {
-                WalkSubTreeInDepthRecursive(node.Right);
+                WalkSubTreeInDepthRecursive(node.Right, action);
             }
         }
 
-        public void WalkInBreadth()
+        public void WalkInBreadth(Action<T> action)
         {
             if (_root == null)
             {
                 return;
             }
 
-            WalkSubTreeInBreadth(_root);
-        }
+            var queue = new Queue<Node<T>>();
+            queue.Enqueue(_root);
 
-        private int WalkSubTreeInBreadth(Node<T> node)
-        {
-            var count = 0;
-
-            var visited = new Queue<Node<T>>();
-            visited.Enqueue(node);
-
-            while (visited.Count > 0)
+            while (queue.Count > 0)
             {
-                var currentNode = visited.Dequeue();
-                count++;
+                var currentNode = queue.Dequeue();
 
-                Console.Write(currentNode.Value + " ");
+                action.Invoke(currentNode.Value);
 
                 if (currentNode.Left != null)
                 {
-                    visited.Enqueue(currentNode.Left);
+                    queue.Enqueue(currentNode.Left);
                 }
 
                 if (currentNode.Right != null)
                 {
-                    visited.Enqueue(currentNode.Right);
+                    queue.Enqueue(currentNode.Right);
                 }
             }
-
-            return count;
         }
 
-        public void WalkInDepth()
+        public void WalkInDepth(Action<T> action)
         {
             if (_root == null)
             {
                 return;
             }
 
-            WalkSubTreeInDepth(_root);
-        }
+            var stack = new Stack<Node<T>>();
+            stack.Push(_root);
 
-        public int WalkSubTreeInDepth(Node<T> node)
-        {
-            var count = 0;
-
-            var visited = new Stack<Node<T>>();
-            visited.Push(node);
-
-            while (visited.Count > 0)
+            while (stack.Count > 0)
             {
-                var currentNode = visited.Pop();
-                count++;
+                var currentNode = stack.Pop();
 
-                Console.Write(currentNode.Value + " ");
+                action.Invoke(currentNode.Value);
 
                 if (currentNode.Right != null)
                 {
-                    visited.Push(currentNode.Right);
+                    stack.Push(currentNode.Right);
                 }
 
                 if (currentNode.Left != null)
                 {
-                    visited.Push(currentNode.Left);
+                    stack.Push(currentNode.Left);
                 }
             }
-
-            return count;
         }
 
         public bool Remove(T value)
@@ -294,93 +237,106 @@
                 return false;
             }
 
-            var parentAndCurrentNodesPair = SearchNode(value, null, _root);
+            var nodes = SearchNode(value, null, _root);
 
-            if (parentAndCurrentNodesPair.currentNode == null)
+            if (nodes.currentNode == null)
             {
                 return false;
             }
 
-            return RemoveNode(parentAndCurrentNodesPair.parentNode, parentAndCurrentNodesPair.currentNode);
-        }
+            var deleteNode = nodes.currentNode;
+            var parentNode = nodes.parentNode;
 
-        private bool RemoveNode(Node<T> parentNode, Node<T> currentNode)
-        {
             //If leaf
-            if (currentNode.Right == null && currentNode.Left == null)
+            if (deleteNode.Right == null && deleteNode.Left == null)
             {
-                if (parentNode.Left == currentNode)
+                if (parentNode == null)
+                {
+                    _root = null;
+                }
+                else if (parentNode.Left == deleteNode)
                 {
                     parentNode.Left = null;
                 }
-
-                if (parentNode.Right == currentNode)
+                else
                 {
                     parentNode.Right = null;
                 }
 
-                return true;
-            }
-
-            //If 1 child
-            if (currentNode.Right == null)
-            {
-                if (parentNode.Left == currentNode)
-                {
-                    parentNode.Left = currentNode.Left;
-                }
-
-                if (parentNode.Right == currentNode)
-                {
-                    parentNode.Right = currentNode.Left;
-                }
+                Count--;
 
                 return true;
             }
 
             //If 1 child
-            if (currentNode.Left == null)
+            if (deleteNode.Right == null)
             {
-                if (parentNode.Left == currentNode)
+                if (parentNode == null)
                 {
-                    parentNode.Left = currentNode.Right;
+                    _root = deleteNode.Left;
+                }
+                else if (parentNode.Left == deleteNode)
+                {
+                    parentNode.Left = deleteNode.Left;
+                }
+                else
+                {
+                    parentNode.Right = deleteNode.Left;
                 }
 
-                if (parentNode.Right == currentNode)
+                Count--;
+
+                return true;
+            }
+
+            //If 1 child
+            if (deleteNode.Left == null)
+            {
+                if (parentNode == null)
                 {
-                    parentNode.Right = currentNode.Right;
+                    _root = deleteNode.Right;
                 }
+                else if (parentNode.Left == deleteNode)
+                {
+                    parentNode.Left = deleteNode.Right;
+                }
+                else
+                {
+                    parentNode.Right = deleteNode.Right;
+                }
+
+                Count--;
 
                 return true;
             }
 
             // if all child nodes is not null
-            var minNodeOfSubtree = FindSubTreeMinNode(currentNode, currentNode.Right);
+            var minNodeOfSubtree = SearchSubTreeMinNode(deleteNode, deleteNode.Right);
 
-            return ReplaceNode(parentNode, currentNode, minNodeOfSubtree);
+            return ReplaceNode(parentNode, deleteNode, minNodeOfSubtree);
         }
 
-        private Node<T> FindSubTreeMinNode(Node<T> parentNode, Node<T> rootNode)
+        private static Node<T> SearchSubTreeMinNode(Node<T> rootNodeParent, Node<T> rootNode)
         {
-            var parentTempNode = parentNode;
+            var minNodeParent = rootNodeParent;
             var minNode = rootNode;
 
             while (minNode.Left != null)
             {
-                parentTempNode = minNode;
+                minNodeParent = minNode;
                 minNode = minNode.Left;
             }
 
             if (minNode.Right != null)
             {
-                if (parentTempNode.Right == minNode)
+                if (minNodeParent.Right == minNode)
                 {
-                    parentTempNode.Right = minNode.Right;
+                    minNodeParent.Right = minNode.Right;
                 }
 
-                if (parentTempNode.Left == minNode)
+                if (minNodeParent.Left == minNode)
                 {
-                    parentTempNode.Left = minNode.Right;
+                    minNodeParent.Left = minNode.Right;
                 }
             }
 
@@ -391,18 +347,28 @@
 
         private bool ReplaceNode(Node<T> parentNode, Node<T> replaceableNode, Node<T> replacementNode)
         {
+            if (replaceableNode == replacementNode)
+            {
+                return false;
+            }
+
             replacementNode.Left = replaceableNode.Left;
             replacementNode.Right = replaceableNode.Right;
 
-            if (parentNode.Right == replaceableNode)
+            if (parentNode == null)
+            {
+                _root = replaceableNode;
+            }
+            else if (parentNode.Right == replaceableNode)
             {
                 parentNode.Right = replacementNode;
             }
-
-            if (parentNode.Left == replaceableNode)
+            else
             {
                 parentNode.Left = replacementNode;
             }
+
+            Count--;
 
             return true;
         }

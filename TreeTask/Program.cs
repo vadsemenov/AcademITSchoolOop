@@ -7,8 +7,9 @@
             var tree = new BinarySearchTree<int>();
 
             tree.Insert(8);
-            
+
             tree.Insert(3);
+
             tree.Insert(1);
             tree.Insert(6);
             tree.Insert(4);
@@ -20,13 +21,13 @@
             tree.Insert(14);
 
 
-            tree.WalkInDepthRecursive();
+            tree.WalkInDepthRecursive(PrintIntValue);
             Console.WriteLine();
 
-            tree.WalkInDepth();
+            tree.WalkInDepth(PrintIntValue);
             Console.WriteLine();
 
-            tree.WalkInBreadth();
+            tree.WalkInBreadth(PrintIntValue);
             Console.WriteLine();
 
             tree.Remove(10);
@@ -37,7 +38,8 @@
 
             Console.WriteLine();
 
-            var tree2 = new BinarySearchTree<Distance>();
+            var distanceComparer = new DistanceComparer();
+            var tree2 = new BinarySearchTree<Distance>(distanceComparer);
 
             tree2.Insert(new Distance { Length = 8 });
 
@@ -53,20 +55,31 @@
             tree2.Insert(new Distance { Length = 14 });
 
 
-            tree2.WalkInDepthRecursive();
+            tree2.WalkInDepthRecursive(PrintDistanceLength);
             Console.WriteLine();
 
-            tree2.WalkInDepth();
+            tree2.WalkInDepth(PrintDistanceLength);
             Console.WriteLine();
 
-            tree2.WalkInBreadth();
+            tree2.WalkInBreadth(PrintDistanceLength);
             Console.WriteLine();
 
             tree2.Remove(new Distance { Length = 10 });
 
             Console.WriteLine(tree2.Search(new Distance { Length = 15 }));
 
+            Console.WriteLine(tree2.Count.ToString());
+
             Console.Read();
+        }
+
+        private static void PrintIntValue(int value)
+        {
+            Console.Write(value + " ");
+        }
+        private static void PrintDistanceLength(Distance distance)
+        {
+            Console.Write(distance.Length + " ");
         }
     }
 }
