@@ -357,7 +357,7 @@ namespace TreeTask
 
             if (parentNode == null)
             {
-                _root = replaceableNode;
+                _root = replacementNode;
             }
             else if (parentNode.Right == replaceableNode)
             {

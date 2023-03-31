@@ -18,6 +18,9 @@
             tree.Insert(10);
             tree.Insert(15);
             tree.Insert(13);
+
+            tree.Remove(8);
+
             tree.Insert(14);
 
 
