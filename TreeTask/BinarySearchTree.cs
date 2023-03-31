@@ -1,22 +1,32 @@
 ﻿namespace TreeTask
 {
-    public class BinarySearchTree<T>
+    internal class BinarySearchTree<T>
     {
-        private readonly Node<T> _root;
+        private Node<T> _root;
         private readonly IComparer<T> _comparer;
 
         public int Count => WalkSubTreeInDepth(_root);
 
-        public BinarySearchTree(T rootValue)
+        public BinarySearchTree()
         {
-            _root = new Node<T>(rootValue);
+
         }
 
-        public BinarySearchTree(T rootValue, Comparer<T> comparer)
+        public BinarySearchTree(Comparer<T> comparer)
         {
-            _root = new Node<T>(rootValue);
             _comparer = comparer;
         }
+
+        // public BinarySearchTree(T rootValue)
+        // {
+        //     _root = new Node<T>(rootValue);
+        // }
+        //
+        // public BinarySearchTree(T rootValue, Comparer<T> comparer)
+        // {
+        //     _root = new Node<T>(rootValue);
+        //     _comparer = comparer;
+        // }
 
         private int Compare(T value1, T value2)
         {
@@ -54,6 +64,12 @@
 
         public void Insert(T value)
         {
+            if (_root == null)
+            {
+                _root = new Node<T>(value);
+                return;
+            }
+
             InsertNode(value, _root);
         }
 
@@ -119,6 +135,11 @@
 
         public bool Search(T value)
         {
+            if (_root == null)
+            {
+                return false;
+            }
+
             return SearchNode(value, null, _root).currentNode != null;
         }
 
@@ -162,6 +183,11 @@
 
         public void WalkInDepthRecursive()
         {
+            if (_root == null)
+            {
+                return;
+            }
+
             WalkSubTreeInDepthRecursive(_root);
         }
 
@@ -187,6 +213,11 @@
 
         public void WalkInBreadth()
         {
+            if (_root == null)
+            {
+                return;
+            }
+
             WalkSubTreeInBreadth(_root);
         }
 
@@ -220,6 +251,11 @@
 
         public void WalkInDepth()
         {
+            if (_root == null)
+            {
+                return;
+            }
+
             WalkSubTreeInDepth(_root);
         }
 
@@ -253,6 +289,11 @@
 
         public bool Remove(T value)
         {
+            if (_root == null)
+            {
+                return false;
+            }
+
             var parentAndCurrentNodesPair = SearchNode(value, null, _root);
 
             if (parentAndCurrentNodesPair.currentNode == null)

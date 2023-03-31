@@ -4,8 +4,10 @@
     {
         static void Main(string[] args)
         {
-            var tree = new BinarySearchTree<int>(8);
+            var tree = new BinarySearchTree<int>();
 
+            tree.Insert(8);
+            
             tree.Insert(3);
             tree.Insert(1);
             tree.Insert(6);
@@ -35,7 +37,9 @@
 
             Console.WriteLine();
 
-            var tree2 = new BinarySearchTree<Distance>(new Distance() { Length = 8 });
+            var tree2 = new BinarySearchTree<Distance>();
+
+            tree2.Insert(new Distance { Length = 8 });
 
             tree2.Insert(new Distance { Length = 3 });
             tree2.Insert(new Distance { Length = 1 });
