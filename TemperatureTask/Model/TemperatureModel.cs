@@ -10,8 +10,8 @@ namespace TemperatureTask.Model
         public TemperatureScale SelectedSourceScale { get; set; }
         public TemperatureScale SelectedDestinationScale { get; set; }
 
-        public BindingList<TemperatureScale> SourceScales { get; } = new BindingList<TemperatureScale>();
-        public BindingList<TemperatureScale> DestinationScales { get; } = new BindingList<TemperatureScale>();
+        public BindingList<TemperatureScale> SourceScales { get; } = new();
+        public BindingList<TemperatureScale> DestinationScales { get; } = new();
 
         public TemperatureModel()
         {

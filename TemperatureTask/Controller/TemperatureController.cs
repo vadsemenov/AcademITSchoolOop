@@ -30,13 +30,13 @@ namespace TemperatureTask.Controller
         {
             set
             {
-                if (Double.TryParse(value.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out double temperature))
+                if (double.TryParse(value.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out double temperature))
                 {
                     _model.SourceTemperature = temperature;
                 }
                 else
                 {
-                    throw new ArgumentException("Введеное значение не является числом!");
+                    throw new ArgumentException("Веденное значение не является числом!");
                 }
 
             }
@@ -73,9 +73,9 @@ namespace TemperatureTask.Controller
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

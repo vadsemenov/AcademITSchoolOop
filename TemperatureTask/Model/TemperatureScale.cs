@@ -2,7 +2,7 @@
 {
     public class TemperatureScale
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         public double Offset { get; set; }
 

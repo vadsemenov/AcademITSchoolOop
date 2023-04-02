@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using TemperatureTask.Controller;
 
 namespace TemperatureTask
@@ -13,16 +14,16 @@ namespace TemperatureTask
 
             sourceScaleComboBox.DataSource = _controller.SourceScales;
             sourceScaleComboBox.DisplayMember = "Name";
-            sourceScaleComboBox.DataBindings.Add("SelectedItem", _controller, "SelectedSourceScale", false, DataSourceUpdateMode.OnPropertyChanged);
+            sourceScaleComboBox.DataBindings.Add("SelectedItem", _controller, nameof(_controller.SelectedSourceScale), false, DataSourceUpdateMode.OnPropertyChanged);
 
             destinationScaleComboBox.DataSource = _controller.DestinationScales;
             destinationScaleComboBox.DisplayMember = "Name";
-            destinationScaleComboBox.DataBindings.Add("SelectedItem", _controller, "SelectedDestinationScale", false, DataSourceUpdateMode.OnPropertyChanged);
+            destinationScaleComboBox.DataBindings.Add("SelectedItem", _controller, nameof(_controller.SelectedDestinationScale), false, DataSourceUpdateMode.OnPropertyChanged);
 
-            tempratureLabel.DataBindings.Add("Text", _controller, "DestinationTemperature", false, DataSourceUpdateMode.OnPropertyChanged);
+            tempratureLabel.DataBindings.Add("Text", _controller, nameof(_controller.DestinationTemperature), false, DataSourceUpdateMode.OnPropertyChanged);
         }
 
-        private void convertButton_Click(object sender, System.EventArgs e)
+        private void convertButton_Click(object sender, EventArgs e)
         {
             _controller.ConvertTemperature(valueTextBox.Text);
         }
