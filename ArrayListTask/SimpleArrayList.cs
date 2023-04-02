@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Text;
 
 namespace ArrayListTask;
 
@@ -6,7 +7,6 @@ public class SimpleArrayList<T> : IList<T>
 {
     private const int DefaultCapacity = 4;
     private T[] _items;
-    private int _size;
     private int _modCount = 0;
 
     public SimpleArrayList() => _items = new T[DefaultCapacity];
@@ -15,23 +15,22 @@ public class SimpleArrayList<T> : IList<T>
     {
         if (capacity < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(capacity),
-                "Вместимость должна быть более или равна нулю!");
+            throw new ArgumentOutOfRangeException(nameof(capacity), $"Вместимость должна быть более или равна нулю, сейчас {capacity}!");
         }
 
         _items = new T[capacity];
     }
 
-    public bool IsReadOnly { get; }
+    public bool IsReadOnly => false;
 
     public int Capacity
     {
         get => _items.Length;
         set
         {
-            if (value < _size)
+            if (value < Count)
             {
-                throw new ArgumentOutOfRangeException(nameof(_size), "Вместимость меньше существующей!");
+                throw new ArgumentOutOfRangeException(nameof(value), $"Вместимость {value} меньше размера коллекции {Count}!");
             }
 
             if (value == _items.Length)
@@ -41,14 +40,7 @@ public class SimpleArrayList<T> : IList<T>
 
             if (value > 0)
             {
-                var destinationArray = new T[value];
-
-                if (_size > 0)
-                {
-                    Array.Copy(_items, 0, destinationArray, 0, _size);
-                }
-
-                _items = destinationArray;
+                Array.Resize(ref _items, value);
             }
             else
             {
@@ -57,96 +49,88 @@ public class SimpleArrayList<T> : IList<T>
         }
     }
 
-    private void EnsureCapacity(int min)
+
+    private void IncreaseCapacity()
     {
-        if (_items.Length >= min)
+        long newCapacity = _items.Length == 0 ? DefaultCapacity : _items.Length * 2;
+
+        if ((uint)newCapacity > int.MaxValue)
         {
-            return;
+            Capacity = int.MaxValue;
         }
 
-        int num = _items.Length == 0 ? 4 : _items.Length * 2;
-
-        if ((uint)num > 2146435071U)
-        {
-            num = 2146435071;
-        }
-
-        if (num < min)
-        {
-            num = min;
-        }
-
-        Capacity = num;
+        Capacity = (int)newCapacity;
     }
 
     public void TrimExcess()
     {
-        if (_size >= (int)(_items.Length * 0.9))
+        if (Count >= (int)(_items.Length * 0.9))
         {
             return;
         }
 
-        Capacity = _size;
+        Capacity = Count;
+    }
+
+    private void CheckIndexForRead(int index)
+    {
+        if (index < 0 || index >= Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс {index}, должен быть от 0 до {Count} включительно!");
+        }
+    }
+
+    private void CheckIndexForModify(int index)
+    {
+        if (index < 0 || index > Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс {index}, должен быть от 0 до {Count}!");
+        }
     }
 
     public T this[int index]
     {
         get
         {
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), "Индекс вне границ списка!");
-            }
+            CheckIndexForRead(index);
 
             return _items[index];
         }
         set
         {
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), "Индекс вне границ списка!");
-            }
+            CheckIndexForModify(index);
 
             _items[index] = value;
+
+            _modCount++;
         }
     }
 
-    public int Count
-    {
-        get => _size;
-    }
+    public int Count { get; private set; }
 
     public void Add(T item)
     {
-        if (_size == _items.Length)
-        {
-            EnsureCapacity(_size + 1);
-        }
-
-        _items[_size++] = item;
+        Insert(Count, item);
     }
 
     public void Clear()
     {
-        _items = new T[DefaultCapacity];
-        _size = 0;
+        Array.Clear(_items);
+        Count = 0;
+
+        _modCount++;
     }
 
     public bool Contains(T item)
     {
-        if (item == null)
-        {
-            throw new ArgumentNullException(nameof(item), "Аргумент равен null");
-        }
-
         return IndexOf(item) != -1;
     }
 
-    public void CopyTo(T[] array, int arrayIndex) => Array.Copy(_items, 0, array, arrayIndex, _size);
+    public void CopyTo(T[] array, int arrayIndex) => Array.Copy(_items, 0, array, arrayIndex, Count);
 
     public bool Remove(T item)
     {
-        int index = IndexOf(item);
+        var index = IndexOf(item);
 
         if (index < 0)
         {
@@ -160,14 +144,9 @@ public class SimpleArrayList<T> : IList<T>
 
     public int IndexOf(T item)
     {
-        if (item == null)
+        for (var i = 0; i < Count; i++)
         {
-            throw new ArgumentNullException(nameof(item), "Аргумент равен null");
-        }
-
-        for (var i = 0; i < _size; i++)
-        {
-            if (item.Equals(_items[i]))
+            if (_items[i].Equals(item))
             {
                 return i;
             }
@@ -178,46 +157,51 @@ public class SimpleArrayList<T> : IList<T>
 
     public void Insert(int index, T item)
     {
-        if (index < 0 || index >= Count)
+        CheckIndexForModify(index);
+
+        if (Count == _items.Length)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), "Индекс вне границ списка!");
+            IncreaseCapacity();
         }
 
-        if (_size == _items.Length)
+        if (index < Count)
         {
-            EnsureCapacity(_size + 1);
-        }
-
-        if (index < _size)
-        {
-            Array.Copy(_items, index, _items, index + 1, _size - index);
+            Array.Copy(_items, index, _items, index + 1, Count - index);
         }
 
         _items[index] = item;
-        ++_size;
+        ++Count;
+
+        _modCount++;
     }
 
     public void RemoveAt(int index)
     {
-        if (index < 0 || index >= Count)
+        CheckIndexForModify(index);
+
+        --Count;
+
+        if (index < Count)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), "Индекс вне границ списка!");
+            Array.Copy(_items, index + 1, _items, index, Count - index);
         }
 
-        --_size;
+        _items[Count] = default;
 
-        if (index < _size)
-        {
-            Array.Copy(_items, index + 1, _items, index, _size - index);
-        }
-
-        _items[_size] = default(T);
+        _modCount++;
     }
 
     public IEnumerator<T> GetEnumerator()
     {
-        for (int i = 0; i < _size; i++)
+        var expectedModCount = _modCount;
+
+        for (var i = 0; i < Count; i++)
         {
+            if (expectedModCount != _modCount)
+            {
+                throw new InvalidOperationException("Совершено изменение во время итерации!");
+            }
+
             yield return _items[i];
         }
     }
@@ -229,6 +213,12 @@ public class SimpleArrayList<T> : IList<T>
 
     public override string ToString()
     {
-        return string.Join(", ", _items.Select(x => x.ToString()).Take(_size));
+        var stringBuilder = new StringBuilder();
+
+        stringBuilder.Append("[");
+        stringBuilder.AppendJoin(", ", _items.Take(Count));
+        stringBuilder.Append("]");
+
+        return stringBuilder.ToString();
     }
 }

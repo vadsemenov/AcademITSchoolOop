@@ -6,6 +6,15 @@
         {
             var list = new SimpleArrayList<int>(100) { 1, 2, 3, 4, 5, 6, 7 };
 
+            list.Add(8);
+
+            Console.WriteLine(list.Count);
+
+            list.Insert(8, 9);
+            list.Insert(9, 10);
+
+            Console.WriteLine(list);
+
             Console.WriteLine("Элемент по индексу 3: " + list[3]);
 
             list[3] = 22;
@@ -30,6 +39,9 @@
 
             var numbers = list.Select(x => x.ToString()).ToArray();
             Console.WriteLine("Проверка Enumerator: " + string.Join(", ", numbers));
+
+            list.Clear();
+            Console.WriteLine("После Clear: " + list);
 
             Console.Read();
         }
