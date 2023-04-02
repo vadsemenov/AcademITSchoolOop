@@ -1,7 +1,8 @@
-﻿using System.Xml.Linq;
-
-namespace TreeTask
+﻿namespace TreeTask
 {
+// #nullable disable annotations
+// #nullable disable warnings
+#nullable disable
     internal class BinarySearchTree<T>
     {
         private Node<T> _root;
@@ -111,7 +112,7 @@ namespace TreeTask
 
         private (Node<T> parentNode, Node<T> currentNode) SearchNode(T value, Node<T> parentNode, Node<T> node)
         {
-            var currnetNodeParent = parentNode;
+            var currentNodeParent = parentNode;
             var currentNode = node;
 
             while (true)
@@ -120,7 +121,7 @@ namespace TreeTask
 
                 if (compareResult == 0)
                 {
-                    return (currnetNodeParent, currentNode);
+                    return (currentNodeParent, currentNode);
                 }
 
                 if (compareResult > 0)
@@ -130,7 +131,7 @@ namespace TreeTask
                         return (currentNode, null);
                     }
 
-                    currnetNodeParent = currentNode;
+                    currentNodeParent = currentNode;
                     currentNode = currentNode.Left;
 
                     continue;
@@ -143,7 +144,7 @@ namespace TreeTask
                         return (currentNode, null);
                     }
 
-                    currnetNodeParent = currentNode;
+                    currentNodeParent = currentNode;
                     currentNode = currentNode.Right;
                 }
             }

@@ -7,6 +7,7 @@ public class SimpleArrayList<T> : IList<T>
     private const int DefaultCapacity = 4;
     private T[] _items;
     private int _size;
+    private int _modCount = 0;
 
     public SimpleArrayList() => _items = new T[DefaultCapacity];
 
@@ -215,7 +216,10 @@ public class SimpleArrayList<T> : IList<T>
 
     public IEnumerator<T> GetEnumerator()
     {
-        return new SimpleArrayListEnumerator<T>(_items, _size);
+        for (int i = 0; i < _size; i++)
+        {
+            yield return _items[i];
+        }
     }
 
     IEnumerator IEnumerable.GetEnumerator()
