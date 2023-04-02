@@ -34,7 +34,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.sourceScaleComboBox = new System.Windows.Forms.ComboBox();
             this.convertButton = new System.Windows.Forms.Button();
-            this.tempratureLabel = new System.Windows.Forms.Label();
+            this.temperatureLabel = new System.Windows.Forms.Label();
             this.valueGroupBox = new System.Windows.Forms.GroupBox();
             this.valueTextBox = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1.SuspendLayout();
@@ -52,7 +52,7 @@
             this.tableLayoutPanel1.Controls.Add(this.groupBox2, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.convertButton, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.tempratureLabel, 2, 1);
+            this.tableLayoutPanel1.Controls.Add(this.temperatureLabel, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.valueGroupBox, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
@@ -121,17 +121,17 @@
             this.convertButton.UseVisualStyleBackColor = true;
             this.convertButton.Click += new System.EventHandler(this.convertButton_Click);
             // 
-            // tempratureLabel
+            // temperatureLabel
             // 
-            this.tempratureLabel.AutoSize = true;
-            this.tempratureLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tempratureLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tempratureLabel.Location = new System.Drawing.Point(399, 138);
-            this.tempratureLabel.Name = "tempratureLabel";
-            this.tempratureLabel.Size = new System.Drawing.Size(190, 139);
-            this.tempratureLabel.TabIndex = 4;
-            this.tempratureLabel.Text = "0";
-            this.tempratureLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.temperatureLabel.AutoSize = true;
+            this.temperatureLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.temperatureLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.temperatureLabel.Location = new System.Drawing.Point(399, 138);
+            this.temperatureLabel.Name = "temperatureLabel";
+            this.temperatureLabel.Size = new System.Drawing.Size(190, 139);
+            this.temperatureLabel.TabIndex = 4;
+            this.temperatureLabel.Text = "0";
+            this.temperatureLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // valueGroupBox
             // 
@@ -185,7 +185,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ComboBox sourceScaleComboBox;
         private System.Windows.Forms.Button convertButton;
-        private System.Windows.Forms.Label tempratureLabel;
+        private System.Windows.Forms.Label temperatureLabel;
         private System.Windows.Forms.GroupBox valueGroupBox;
         private System.Windows.Forms.TextBox valueTextBox;
     }

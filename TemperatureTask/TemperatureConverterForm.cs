@@ -20,7 +20,7 @@ namespace TemperatureTask
             destinationScaleComboBox.DisplayMember = "Name";
             destinationScaleComboBox.DataBindings.Add("SelectedItem", _controller, nameof(_controller.SelectedDestinationScale), false, DataSourceUpdateMode.OnPropertyChanged);
 
-            tempratureLabel.DataBindings.Add("Text", _controller, nameof(_controller.DestinationTemperature), false, DataSourceUpdateMode.OnPropertyChanged);
+            temperatureLabel.DataBindings.Add("Text", _controller, nameof(_controller.DestinationTemperature), false, DataSourceUpdateMode.OnPropertyChanged);
         }
 
         private void convertButton_Click(object sender, EventArgs e)
