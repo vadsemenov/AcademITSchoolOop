@@ -1,28 +1,18 @@
 ﻿namespace ListTask;
 
-public class Node<T> : ICloneable
+internal class Node<T>
 {
-    public Node<T> NextNode;
+    public Node<T> Next { get; set; }
 
     public T Value { get; set; }
 
-    public Node(T value) : this(null!, value)
+    public Node(T value) : this(value, null)
     {
     }
 
-    public Node(Node<T> nextNode, T value)
+    public Node(T value, Node<T> next)
     {
-        NextNode = nextNode;
         Value = value;
-    }
-
-    public override string ToString()
-    {
-        return $"Значение узла равно {Value}";
-    }
-
-    public object Clone()
-    {
-        return new Node<T>(Value);
+        Next = next;
     }
 }

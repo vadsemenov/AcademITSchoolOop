@@ -4,46 +4,49 @@
     {
         static void Main(string[] args)
         {
-            var list = new SingleLinkedList<int>();
-            list.Add(1);
-            list.Add(2);
-            list.Add(3);
-            list.Add(4);
-            list.Add(5);
-            list.Add(6);
+            var list1 = new SingleLinkedList<int?> { 1, 2, 3, 4, 5, 6 };
 
-            Console.WriteLine($"Размер списка: {list.GetSize()}");
+            Console.WriteLine(list1);
 
-            Console.WriteLine($"Значение первого элемента: {list.GetHeadValue()}");
+            Console.WriteLine($"Размер листа: {list1.Count}");
 
-            Console.WriteLine($"Изменение значения элемента по индексу 2: {list.SetValueByIndex(2, 11)}");
-            Console.WriteLine($"Значение элемента по индексу 2 посла изменения: {list.GetValueByIndex(2)}");
+            Console.WriteLine($"Значение первого элемента: {list1.GetFirst()}");
 
-            Console.WriteLine($"Удаление элемента по индексу 4: {list.DeleteByIndex(4)}");
-            Console.WriteLine($"Значение элемента по индексу 4: {list.GetValueByIndex(4)}");
+            Console.WriteLine($"Изменение значения элемента по индексу 2: {list1.SetByIndex(2, 11)}");
+            Console.WriteLine($"Значение элемента по индексу 2 после изменения: {list1}");
 
-            list.InsertHead(10);
-            Console.WriteLine($"Значение первого элемента: {list.GetHeadValue()}");
+            Console.WriteLine($"Удаление элемента по индексу 4: {list1.DeleteByIndex(4)}");
+            Console.WriteLine($"Значение элемента по индексу 4: {list1.GetByIndex(4)}");
 
-            list.InsertByIndex(4, 22);
-            Console.WriteLine($"Значение элемента по индексу 4: {list.GetValueByIndex(4)}");
+            Console.WriteLine(list1);
+            Console.WriteLine($"Изменение значения элемента по индексу 2: {list1.SetByIndex(2, null)}");
+            Console.WriteLine($"Удаление элемента со значением 11: {list1.DeleteByValue(null)}");
 
-            Console.WriteLine($"Удаление элемента со значением 11: {list.DeleteByValue(11)}");
+            list1.AddFirst(10);
+            Console.WriteLine($"Значение первого элемента: {list1.GetFirst()}");
 
-            Console.WriteLine($"Удаление первого элемента: {list.DeleteHead()}");
+            list1.InsertByIndex(4, 22);
+            Console.WriteLine($"Значение элемента по индексу 4: {list1.GetByIndex(4)}");
 
-            list.Reverse();
-            Console.WriteLine($"Значение первого элемента после разворота: {list.GetHeadValue()}");
-            Console.WriteLine($"Значение второго элемента после разворота: {list.GetValueByIndex(2)}");
+            Console.WriteLine($"Удаление элемента со значением 11: {list1.DeleteByValue(11)}");
 
-            var list2 = list.Copy();
-            Console.WriteLine($"Значение первого элемента исходного листа: {list.GetHeadValue()}");
-            Console.WriteLine($"Значение первого элемента скопированного листа: {list2.GetHeadValue()}");
+            Console.WriteLine($"Удаление первого элемента: {list1.DeleteFirst()}");
 
-            list2.InsertHead(10);
-            Console.WriteLine($"Значение первого элемента исходного листа: {list.GetHeadValue()}");
-            Console.WriteLine($"Значение первого элемента скопированного листа: {list2.GetHeadValue()}");
-            Console.WriteLine($"Значение четвертого элемента скопированного листа: {list2.GetValueByIndex(4)}");
+            list1.Reverse();
+            Console.WriteLine($"Значения после разворота: {list1}");
+
+            Console.WriteLine(list1);
+            Console.WriteLine($"Размер листа: {list1.Count}");
+
+            var list2 = list1.Copy();
+            Console.WriteLine($"Значения исходного листа: {list1}");
+            Console.WriteLine($"Значение скопированного листа: {list2}");
+
+            list2.AddFirst(10);
+            Console.WriteLine($"Значения исходного листа: {list1}");
+            Console.WriteLine($"Значения скопированного листа: {list2}");
+            Console.WriteLine($"Размер скопированного листа: {list2.Count}");
+
 
             Console.Read();
         }

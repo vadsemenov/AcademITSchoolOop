@@ -1,104 +1,82 @@
-﻿namespace ListTask;
+﻿using System;
+using System.Collections;
+using System.Text;
 
-public class SingleLinkedList<T>
+namespace ListTask;
+
+public class SingleLinkedList<T> : IEnumerable<T>
 {
-    private Node<T> _headNode;
+    private Node<T> _head;
 
     public SingleLinkedList()
     {
     }
 
+    public int Count { get; private set; }
+
     public SingleLinkedList(T headNodeValue)
     {
-        _headNode = new Node<T>(headNodeValue);
+        _head = new Node<T>(headNodeValue);
+        Count++;
     }
 
     public void Add(T value)
     {
-        var node = new Node<T>(value);
-
-        if (_headNode == null)
-        {
-            _headNode = node;
-            return;
-        }
-
-        var currentNode = _headNode;
-
-        while (currentNode.NextNode != null)
-        {
-            currentNode = currentNode.NextNode;
-        }
-
-        currentNode.NextNode = node;
+        InsertByIndex(Count, value);
     }
 
-    public int GetSize()
+    private void CheckListIsEmpty()
     {
-        var size = 0;
-
-        if (_headNode == null)
+        if (_head == null)
         {
-            return size;
+            throw new ArgumentOutOfRangeException(nameof(SingleLinkedList<T>), "Список не содержит элементов.");
         }
-
-        size++;
-
-        var currentNode = _headNode;
-
-        while (currentNode.NextNode != null)
-        {
-            size++;
-            currentNode = currentNode.NextNode;
-        }
-
-        return size;
     }
 
-    public T GetHeadValue()
+    private void CheckIndex(int index)
     {
-        if (_headNode == null)
+        if (index < 0)
         {
-            throw new ArgumentNullException(nameof(SingleLinkedList<T>), "List не содержит элементов.");
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс должен быть больше или равен нулю. Текущее значение {index}");
         }
+    }
 
-        return _headNode.Value;
+    public T GetFirst()
+    {
+        CheckListIsEmpty();
+        return _head.Value;
     }
 
     private Node<T> GetNodeByIndex(int index)
     {
-        if (_headNode == null)
-        {
-            throw new ArgumentNullException(nameof(SingleLinkedList<T>), "List не содержит элементов.");
-        }
-
-        if (index < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index), "Индекс должен быть больше или равен нулю. Текущее значение " + index);
-        }
-
-        var currentNode = _headNode;
+        var currentNode = _head;
 
         for (var i = 1; i <= index; i++)
         {
-            currentNode = currentNode.NextNode ?? throw new ArgumentOutOfRangeException(nameof(index), "Размер списка меньше запрашиваемого индекса." + " Размер списка " + i + 1 + " элементов. Текущее значение индекса " + index);
+            currentNode = currentNode.Next ?? throw new ArgumentOutOfRangeException(nameof(index), $"Размер списка меньше запрашиваемого индекса. Размер списка {i + 1} элементов. Текущее значение индекса {index}");
         }
 
         return currentNode;
     }
 
-    public T GetValueByIndex(int index)
+    public T GetByIndex(int index)
     {
-        var currentNode = GetNodeByIndex(index);
+        CheckListIsEmpty();
 
-        return currentNode.Value;
+        CheckIndex(index);
+
+        return GetNodeByIndex(index).Value;
     }
 
-    public T SetValueByIndex(int index, T value)
+    public T SetByIndex(int index, T value)
     {
+        CheckListIsEmpty();
+
+        CheckIndex(index);
+
         var currentNode = GetNodeByIndex(index);
 
-        T oldValue = currentNode.Value;
+        var oldValue = currentNode.Value;
 
         currentNode.Value = value;
 
@@ -107,166 +85,178 @@ public class SingleLinkedList<T>
 
     public T DeleteByIndex(int index)
     {
-        if (_headNode == null)
-        {
-            throw new ArgumentNullException(nameof(index), "List не содержит элементов.");
-        }
+        CheckListIsEmpty();
 
-        if (index < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index), "Индекс должен быть больше или равен нулю. Текущее значение " + index);
-        }
-
-        var parentNode = _headNode;
-        var currentNode = _headNode;
-
-        T oldValue;
+        CheckIndex(index);
 
         if (index == 0)
         {
-            oldValue = _headNode.Value;
-            _headNode = null;
+            Count--;
 
-            return oldValue;
+            return DeleteFirst();
         }
 
-        for (var i = 1; i <= index; i++)
-        {
-            parentNode = currentNode;
-            currentNode = currentNode.NextNode;
+        var previousNode = GetNodeByIndex(index - 1);
+        var currentNode = previousNode.Next ?? throw new ArgumentOutOfRangeException(nameof(index), $"Размер списка меньше индекса. Размер списка {Count} элементов. Текущее значение индекса {index}");
 
-            if (currentNode == null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), "Размер списка меньше индекса. Размер списка " + i + 1 + " элементов. Текущее значение индекса " + index);
-            }
-        }
+        var deletedValue = currentNode.Value;
 
-        oldValue = currentNode.Value;
+        previousNode!.Next = currentNode.Next;
 
-        parentNode.NextNode = currentNode.NextNode;
+        Count--;
 
-        return oldValue;
+        return deletedValue;
     }
 
-    public void InsertHead(T value)
+    public void AddFirst(T value)
     {
-        var tempNode = new Node<T>(_headNode, value);
+        _head = new Node<T>(value, _head);
 
-        _headNode = tempNode;
+        Count++;
     }
 
     public void InsertByIndex(int index, T value)
     {
+        CheckIndex(index);
+
         if (index == 0)
         {
-            InsertHead(value);
+            AddFirst(value);
             return;
         }
 
-        var parentNode = GetNodeByIndex(index - 1);
-        var currentNode = new Node<T>(parentNode.NextNode, value);
-        parentNode.NextNode = currentNode;
+        var previousNode = GetNodeByIndex(index - 1);
+        previousNode.Next = new Node<T>(value, previousNode.Next);
+
+        Count++;
     }
 
     public bool DeleteByValue(T value)
     {
-        if (_headNode == null)
+        if (_head == null)
         {
             return false;
         }
 
-        if (_headNode.Value.Equals(value))
+        if (_head.Value.Equals(value))
         {
-            _headNode = _headNode.NextNode;
+            DeleteFirst();
+
             return true;
         }
 
-        var parentNode = _headNode;
+        var previousNode = _head;
 
-        while (parentNode.NextNode != null)
+        while (previousNode.Next != null)
         {
-            var currentNode = parentNode.NextNode;
+            var currentNode = previousNode.Next;
 
             if (currentNode.Value.Equals(value))
             {
-                parentNode.NextNode = currentNode.NextNode;
+                previousNode.Next = currentNode.Next;
+                Count--;
+
                 return true;
             }
 
-            parentNode = currentNode;
+            previousNode = currentNode;
         }
 
         return false;
     }
 
-    public T DeleteHead()
+    public T DeleteFirst()
     {
-        if (_headNode == null)
-        {
-            throw new ArgumentNullException(nameof(SingleLinkedList<T>), "List не содержит элементов.");
-        }
+        CheckListIsEmpty();
 
-        var deleteNodeValue = _headNode.Value;
+        var deletedValue = _head.Value;
 
-        _headNode = _headNode.NextNode ?? throw new ArgumentNullException(nameof(SingleLinkedList<T>), "List содержит только 1 элемент.");
+        _head = _head.Next;
 
-        return deleteNodeValue;
+        Count--;
+
+        return deletedValue;
     }
 
     public void Reverse()
     {
-        if (GetSize() < 2)
+        if (Count < 2)
         {
             return;
         }
 
-        var currentNode = _headNode;
+        var currentNode = _head;
+        Node<T> previousNode = null;
 
-        var tailNode = (Node<T>)currentNode.Clone();
-        Node<T> previousTailNode = null;
-
-        while (currentNode.NextNode != null)
+        while (currentNode != null)
         {
-            previousTailNode = (Node<T>)currentNode.NextNode.Clone();
+            var tailNode = currentNode.Next;
+            currentNode.Next = previousNode;
 
-            previousTailNode.NextNode = tailNode;
-
-            tailNode = previousTailNode;
-
-            currentNode = currentNode.NextNode;
+            previousNode = currentNode;
+            currentNode = tailNode;
         }
 
-        _headNode = previousTailNode;
+        _head = previousNode;
     }
 
     public SingleLinkedList<T> Copy()
     {
         var newList = new SingleLinkedList<T>();
 
-        if (GetSize() == 0)
+        if (Count == 0)
         {
             return newList;
         }
 
-        var newHeadNode = (Node<T>)_headNode.Clone();
+        newList._head = new Node<T>(_head.Value);
 
-        var currentSourceNode = _headNode;
+        var currentSourceNode = _head;
 
-        var currentNode = newHeadNode;
+        var currentNode = newList._head;
 
-        while (currentSourceNode.NextNode != null)
+        while (currentSourceNode.Next != null)
         {
-            var nextNode = (Node<T>)currentSourceNode.NextNode.Clone();
+            var nextNode = new Node<T>(currentSourceNode.Next.Value);
 
-            currentNode.NextNode = nextNode;
+            currentNode.Next = nextNode;
+            newList.Count++;
 
             currentNode = nextNode;
 
-            currentSourceNode = currentSourceNode.NextNode;
+            currentSourceNode = currentSourceNode.Next;
         }
 
-        newList._headNode = newHeadNode;
+        newList.Count++;
 
         return newList;
+    }
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        var currentNode = _head;
+
+        while (currentNode != null)
+        {
+            yield return currentNode.Value;
+
+            currentNode = currentNode.Next;
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    public override string ToString()
+    {
+        var stringBuilder = new StringBuilder();
+
+        stringBuilder.Append("[");
+        stringBuilder.AppendJoin(", ", this);
+        stringBuilder.Append("]");
+
+        return stringBuilder.ToString();
     }
 }
