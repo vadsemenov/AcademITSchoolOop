@@ -1,171 +1,156 @@
 ﻿using System.Collections;
 using System.Text;
 
-namespace HashTableTask
+namespace HashTableTask;
+
+public class HashTable<T> : ICollection<T>
 {
-    public class HashTable<T> : ICollection<T>
+    private const int DefaultCapacity = 10;
+
+    private readonly List<T>[] _lists;
+    private int _modCount;
+
+    public HashTable()
     {
-        private const int DefaultCapacity = 10;
+        _lists = new List<T>[DefaultCapacity];
+    }
 
-        private readonly List<T>[] _lists;
-        private int _modCount;
-
-        public HashTable()
+    public HashTable(int capacity)
+    {
+        if (capacity <= 0)
         {
-            _lists = new List<T>[DefaultCapacity];
+            throw new ArgumentOutOfRangeException(nameof(capacity), $"Размер таблицы должен быть более нуля, сейчас равен {capacity}!");
         }
 
-        public HashTable(int capacity)
-        {
-            if (capacity <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(capacity), $"Размер таблицы должен быть более нуля, сейчас равен {capacity}!");
-            }
+        _lists = new List<T>[capacity];
+    }
 
-            _lists = new List<T>[capacity];
+    public int Count { get; private set; }
+
+    public bool IsReadOnly => false;
+
+    private int GetIndex(T o)
+    {
+        if (o == null)
+        {
+            return 0;
         }
 
-        public int Count { get; private set; }
+        return Math.Abs(o.GetHashCode() % _lists.Length);
+    }
 
-        public bool IsReadOnly => false;
+    public bool Contains(T item)
+    {
+        var index = GetIndex(item);
 
-        private int GetIndex(T o)
+        return _lists[index] != null && _lists[index].Contains(item);
+    }
+
+    public void Clear()
+    {
+        if (Count == 0)
         {
-            if (o == null)
-            {
-                return 0;
-            }
-
-            return Math.Abs(o.GetHashCode() % _lists.Length);
+            return;
         }
 
-        public bool Contains(T item)
+        foreach (var list in _lists)
         {
-            var index = GetIndex(item);
-
-            return _lists[index] != null && _lists[index].Contains(item);
+            list?.Clear();
         }
 
-        public void Clear()
+        _modCount++;
+
+        Count = 0;
+    }
+
+    public void Add(T item)
+    {
+        var index = GetIndex(item);
+
+        if (_lists[index] == null)
         {
-            if (Count == 0)
-            {
-                return;
-            }
+            _lists[index] = new List<T>();
+        }
 
-            foreach (var list in _lists)
-            {
-                list?.Clear();
-            }
+        Count++;
+        _modCount++;
 
+        _lists[index].Add(item);
+    }
+
+    public bool Remove(T item)
+    {
+        var index = GetIndex(item);
+
+        if (_lists[index] != null && _lists[index].Remove(item))
+        {
             _modCount++;
+            Count--;
 
-            Count = 0;
+            return true;
         }
 
-        public void Add(T item)
+        return false;
+    }
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        var expectedModCount = _modCount;
+
+        foreach (var list in _lists)
         {
-            var index = GetIndex(item);
-
-            if (_lists[index] == null)
+            if (list != null)
             {
-                _lists[index] = new List<T>();
-            }
-
-            Count++;
-            _modCount++;
-
-            _lists[index].Add(item);
-        }
-
-        public bool Remove(T item)
-        {
-            var index = GetIndex(item);
-
-            if (_lists[index] != null && _lists[index].Remove(item))
-            {
-                _modCount++;
-                Count--;
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            var expectedModCount = _modCount;
-
-            foreach (var list in _lists)
-            {
-                if (list != null)
+                foreach (var value in list)
                 {
-                    foreach (var value in list)
+                    if (expectedModCount != _modCount)
                     {
-                        if (expectedModCount != _modCount)
-                        {
-                            throw new InvalidOperationException("Совершено изменение во время итерации!");
-                        }
-
-                        yield return value;
+                        throw new InvalidOperationException("Совершено изменение во время итерации!");
                     }
+
+                    yield return value;
                 }
             }
         }
+    }
 
-        IEnumerator IEnumerable.GetEnumerator()
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    public void CopyTo(T[] array, int arrayIndex)
+    {
+        if (array == null)
         {
-            return GetEnumerator();
+            throw new ArgumentNullException(nameof(array), "Массив равен null!");
         }
 
-        public void CopyTo(T[] array, int arrayIndex)
+        if (arrayIndex < 0)
         {
-            if (array == null)
-            {
-                throw new ArgumentNullException(nameof(array), "Массив равен null!");
-            }
-
-            if (array.Rank != 1)
-            {
-                throw new ArgumentException("Копирование в многомерные массивы не поддерживается!", nameof(array));
-            }
-
-            if (arrayIndex < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(arrayIndex), "Индекс должен быть >= 0!");
-            }
-
-            if (array.Length - arrayIndex < Count)
-            {
-                throw new ArgumentException("Размер массива не достаточен для копирования значений!", nameof(array));
-            }
-
-            CopyValues(array, arrayIndex);
+            throw new ArgumentOutOfRangeException(nameof(arrayIndex), "Индекс должен быть >= 0!");
         }
 
-        private void CopyValues(T[] array, int arrayIndex)
+        if (array.Length - arrayIndex < Count)
         {
-            var enumerator = GetEnumerator();
-
-            while (enumerator.MoveNext())
-            {
-                array[arrayIndex++] = enumerator.Current;
-            }
-
-            enumerator.Dispose();
+            throw new ArgumentException("Размер массива не достаточен для копирования значений!", nameof(array));
         }
 
-        public override string ToString()
+        foreach (var value in this)
         {
-            var stringBuilder = new StringBuilder();
-
-            stringBuilder.Append("[");
-            stringBuilder.AppendJoin(", ", this);
-            stringBuilder.Append("]");
-
-            return stringBuilder.ToString();
+            array[arrayIndex] = value;
+            arrayIndex++;
         }
     }
-}
 
+    public override string ToString()
+    {
+        var stringBuilder = new StringBuilder();
+
+        stringBuilder.Append('[');
+        stringBuilder.AppendJoin(", ", this);
+        stringBuilder.Append(']');
+
+        return stringBuilder.ToString();
+    }
+}
