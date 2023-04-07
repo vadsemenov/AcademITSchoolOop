@@ -70,7 +70,7 @@ public class Matrix
             throw new ArgumentException("Размер массива векторов должен быть больше 0", nameof(vectors));
         }
 
-        var vectorsMaxSize = vectors.Max(l => l.GetSize());
+        var vectorsMaxSize = vectors.Max(v => v.GetSize());
 
         _rows = new Vector[vectors.Length];
 
@@ -80,9 +80,9 @@ public class Matrix
         }
     }
 
-    public int GetRowsAmount => _rows.Length;
+    public int RowsAmount => _rows.Length;
 
-    public int GetColumnsAmount => _rows[0].GetSize();
+    public int ColumnsAmount => _rows[0].GetSize();
 
     public Vector GetRowByIndex(int index)
     {
@@ -103,7 +103,7 @@ public class Matrix
                 + ". Текущее значение: " + index);
         }
 
-        var currentRowSize = GetColumnsAmount;
+        var currentRowSize = ColumnsAmount;
         var rowSize = row.GetSize();
 
         if (rowSize != currentRowSize)
@@ -117,7 +117,7 @@ public class Matrix
 
     public Vector GetColumnByIndex(int index)
     {
-        var columnsAmount = GetColumnsAmount;
+        var columnsAmount = ColumnsAmount;
 
         if (index < 0 || index >= columnsAmount)
         {
@@ -137,11 +137,11 @@ public class Matrix
 
     public void Transpose()
     {
-        var transposedMatrixRows = new Vector[_rows[0].GetSize()];
+        var transposedMatrixRows = new Vector[ColumnsAmount];
 
-        for (var i = 0; i < transposedMatrixRows.Length; i++)
+        for (var i = 0; i < ColumnsAmount; i++)
         {
-            transposedMatrixRows[i] = GetColumnByIndex(i); // ---
+            transposedMatrixRows[i] = GetColumnByIndex(i);
         }
 
         _rows = transposedMatrixRows;
@@ -159,12 +159,12 @@ public class Matrix
 
     public double GetDeterminant()
     {
-        var columnsAmount = GetColumnsAmount;
+        var columnsAmount = ColumnsAmount;
         var rowsAmount = _rows.Length;
 
         if (rowsAmount != columnsAmount)
         {
-            throw new InvalidOperationException("Количество строк должно быть равно количеству столбцов. Размеры матрицы:"
+            throw new InvalidOperationException("Количество строк должно быть равно количеству столбцов. Размеры матрицы: "
                                                + rowsAmount + " на " + columnsAmount);
         }
 
@@ -213,13 +213,13 @@ public class Matrix
 
     public Vector Multiply(Vector vector)
     {
-        var columnsAmount = GetColumnsAmount;
+        var columnsAmount = ColumnsAmount;
         var vectorSize = vector.GetSize();
 
         if (columnsAmount != vectorSize)
         {
             throw new ArgumentException(
-                "Количество столбцов матрицы должно быть равно размеру вектора. Количество столбцов: "
+                "Размер вектора должен быть равен количеству столбцов матрицы . Количество столбцов: "
                 + columnsAmount + ". Размер вектора: " + vectorSize, nameof(vector));
         }
 
@@ -227,9 +227,7 @@ public class Matrix
 
         for (var i = 0; i < _rows.Length; i++)
         {
-            var resultVectorComponent = Vector.GetScalarProduct(_rows[i], vector);
-
-            resultVector.SetComponentByIndex(i, resultVectorComponent);
+            resultVector.SetComponentByIndex(i, Vector.GetScalarProduct(_rows[i], vector));
         }
 
         return resultVector;
@@ -237,7 +235,7 @@ public class Matrix
 
     public Matrix Add(Matrix matrix)
     {
-        CheckMatrixesSizes(this, matrix);
+        CheckMatricesSizes(this, matrix);
 
         for (var i = 0; i < _rows.Length; i++)
         {
@@ -249,7 +247,7 @@ public class Matrix
 
     public Matrix Subtract(Matrix matrix)
     {
-        CheckMatrixesSizes(this, matrix);
+        CheckMatricesSizes(this, matrix);
 
         for (var i = 0; i < _rows.Length; i++)
         {
@@ -259,11 +257,11 @@ public class Matrix
         return this;
     }
 
-    private static void CheckMatrixesSizes(Matrix matrix1, Matrix matrix2)
+    private static void CheckMatricesSizes(Matrix matrix1, Matrix matrix2)
     {
-        var matrix1ColumnsAmount = matrix1.GetColumnsAmount;
+        var matrix1ColumnsAmount = matrix1.ColumnsAmount;
         var matrix1RowsAmount = matrix1._rows.Length;
-        var matrix2ColumnsAmount = matrix2.GetColumnsAmount;
+        var matrix2ColumnsAmount = matrix2.ColumnsAmount;
         var matrix2RowsAmount = matrix2._rows.Length;
 
         if (matrix1RowsAmount != matrix2RowsAmount || matrix1ColumnsAmount != matrix2ColumnsAmount)
@@ -276,21 +274,21 @@ public class Matrix
 
     public static Matrix GetSum(Matrix matrix1, Matrix matrix2)
     {
-        CheckMatrixesSizes(matrix1, matrix2);
+        CheckMatricesSizes(matrix1, matrix2);
 
         return new Matrix(matrix1).Add(matrix2);
     }
 
     public static Matrix GetDifference(Matrix matrix1, Matrix matrix2)
     {
-        CheckMatrixesSizes(matrix1, matrix2);
+        CheckMatricesSizes(matrix1, matrix2);
 
         return new Matrix(matrix1).Subtract(matrix2);
     }
 
     public static Matrix GetProduct(Matrix matrix1, Matrix matrix2)
     {
-        var matrix1ColumnsAmount = matrix1.GetColumnsAmount;
+        var matrix1ColumnsAmount = matrix1.ColumnsAmount;
         var matrix2RowsAmount = matrix2._rows.Length;
 
         if (matrix1ColumnsAmount != matrix2RowsAmount)
@@ -302,19 +300,19 @@ public class Matrix
         }
 
         var matrix1RowsAmount = matrix1._rows.Length;
-        var matrix2ColumnsAmount = matrix2.GetColumnsAmount;
+        var matrix2ColumnsAmount = matrix2.ColumnsAmount;
 
-        var resultRows = new double[matrix1RowsAmount, matrix2ColumnsAmount];
+        var resultComponents = new double[matrix1RowsAmount, matrix2ColumnsAmount];
 
         for (int i = 0; i < matrix1RowsAmount; i++)
         {
             for (int j = 0; j < matrix2ColumnsAmount; j++)
             {
-                resultRows[i, j] = Vector.GetScalarProduct(matrix1._rows[i], matrix2.GetColumnByIndex(j));
+                resultComponents[i, j] = Vector.GetScalarProduct(matrix1._rows[i], matrix2.GetColumnByIndex(j));
             }
         }
 
-        return new Matrix(resultRows);
+        return new Matrix(resultComponents);
     }
 
     public override string ToString()
