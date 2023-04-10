@@ -1,8 +1,7 @@
 ﻿namespace TreeTask
 {
-// #nullable disable annotations
-// #nullable disable warnings
 #nullable disable
+
     internal class BinarySearchTree<T>
     {
         private Node<T> _root;
@@ -45,10 +44,8 @@
             {
                 return comparableValue1.CompareTo(value2);
             }
-            else
-            {
-                throw new ArgumentException($"Тип {typeof(T).Name} не реализует IComparable!", typeof(T).Name);
-            }
+
+            throw new ArgumentException($"Тип {typeof(T).Name} не реализует IComparable!", typeof(T).Name);
         }
 
         public void Insert(T value)
@@ -60,42 +57,34 @@
                 return;
             }
 
-            InsertNode(value, _root);
-        }
-
-        private Node<T> InsertNode(T value, Node<T> parentNode)
-        {
             var newNode = new Node<T>(value);
-            var currentTempNode = parentNode;
+            var currentNode = _root;
 
             while (true)
             {
-                var compareResult = Compare(currentTempNode.Value, value);
+                var compareResult = Compare(currentNode.Value, value);
 
                 if (compareResult > 0)
                 {
-                    if (currentTempNode.Left == null)
+                    if (currentNode.Left == null)
                     {
-                        currentTempNode.Left = newNode;
+                        currentNode.Left = newNode;
                         Count++;
-                        return newNode;
+                        return;
                     }
 
-                    currentTempNode = currentTempNode.Left;
-
-                    continue;
+                    currentNode = currentNode.Left;
                 }
-
-                if (compareResult <= 0)
+                else
                 {
-                    if (currentTempNode.Right == null)
+                    if (currentNode.Right == null)
                     {
-                        currentTempNode.Right = newNode;
+                        currentNode.Right = newNode;
                         Count++;
-                        return newNode;
+                        return;
                     }
 
-                    currentTempNode = currentTempNode.Right;
+                    currentNode = currentNode.Right;
                 }
             }
         }
@@ -107,13 +96,13 @@
                 return false;
             }
 
-            return SearchNode(value, null, _root).currentNode != null;
+            return SearchNode(value).CurrentNode != null;
         }
 
-        private (Node<T> parentNode, Node<T> currentNode) SearchNode(T value, Node<T> parentNode, Node<T> node)
+        private (Node<T> ParentNode, Node<T> CurrentNode) SearchNode(T value)
         {
-            var currentNodeParent = parentNode;
-            var currentNode = node;
+            Node<T> currentNodeParent = null;
+            var currentNode = _root;
 
             while (true)
             {
@@ -133,11 +122,8 @@
 
                     currentNodeParent = currentNode;
                     currentNode = currentNode.Left;
-
-                    continue;
                 }
-
-                if (compareResult < 0)
+                else
                 {
                     if (currentNode.Right == null)
                     {
@@ -238,24 +224,24 @@
                 return false;
             }
 
-            var nodes = SearchNode(value, null, _root);
+            var nodes = SearchNode(value);
 
-            if (nodes.currentNode == null)
+            if (nodes.CurrentNode == null)
             {
                 return false;
             }
 
-            var deleteNode = nodes.currentNode;
-            var parentNode = nodes.parentNode;
+            var deletedNode = nodes.CurrentNode;
+            var parentNode = nodes.ParentNode;
 
-            //If leaf
-            if (deleteNode.Right == null && deleteNode.Left == null)
+            // If leaf
+            if (deletedNode.Right == null && deletedNode.Left == null)
             {
                 if (parentNode == null)
                 {
                     _root = null;
                 }
-                else if (parentNode.Left == deleteNode)
+                else if (parentNode.Left == deletedNode)
                 {
                     parentNode.Left = null;
                 }
@@ -269,20 +255,20 @@
                 return true;
             }
 
-            //If 1 child
-            if (deleteNode.Right == null)
+            // If 1 child
+            if (deletedNode.Right == null)
             {
                 if (parentNode == null)
                 {
-                    _root = deleteNode.Left;
+                    _root = deletedNode.Left;
                 }
-                else if (parentNode.Left == deleteNode)
+                else if (parentNode.Left == deletedNode)
                 {
-                    parentNode.Left = deleteNode.Left;
+                    parentNode.Left = deletedNode.Left;
                 }
                 else
                 {
-                    parentNode.Right = deleteNode.Left;
+                    parentNode.Right = deletedNode.Left;
                 }
 
                 Count--;
@@ -290,20 +276,20 @@
                 return true;
             }
 
-            //If 1 child
-            if (deleteNode.Left == null)
+            // If 1 child
+            if (deletedNode.Left == null)
             {
                 if (parentNode == null)
                 {
-                    _root = deleteNode.Right;
+                    _root = deletedNode.Right;
                 }
-                else if (parentNode.Left == deleteNode)
+                else if (parentNode.Left == deletedNode)
                 {
-                    parentNode.Left = deleteNode.Right;
+                    parentNode.Left = deletedNode.Right;
                 }
                 else
                 {
-                    parentNode.Right = deleteNode.Right;
+                    parentNode.Right = deletedNode.Right;
                 }
 
                 Count--;
@@ -311,16 +297,13 @@
                 return true;
             }
 
-            // if all child nodes is not null
-            var minNodeOfSubtree = SearchSubTreeMinNode(deleteNode, deleteNode.Right);
-
-            return ReplaceNode(parentNode, deleteNode, minNodeOfSubtree);
+            return ReplaceNode(parentNode, deletedNode);
         }
 
-        private static Node<T> SearchSubTreeMinNode(Node<T> rootNodeParent, Node<T> rootNode)
+        private bool ReplaceNode(Node<T> parentNode, Node<T> replaceableNode)
         {
-            var minNodeParent = rootNodeParent;
-            var minNode = rootNode;
+            var minNodeParent = replaceableNode;
+            var minNode = replaceableNode.Right;
 
             while (minNode.Left != null)
             {
@@ -340,33 +323,32 @@
                     minNodeParent.Left = minNode.Right;
                 }
             }
+            else
+            {
+                minNodeParent.Left = null;
+            }
 
             minNode.Right = null;
 
-            return minNode;
-        }
-
-        private bool ReplaceNode(Node<T> parentNode, Node<T> replaceableNode, Node<T> replacementNode)
-        {
-            if (replaceableNode == replacementNode)
+            if (replaceableNode == minNode)
             {
                 return false;
             }
 
-            replacementNode.Left = replaceableNode.Left;
-            replacementNode.Right = replaceableNode.Right;
+            minNode.Left = replaceableNode.Left;
+            minNode.Right = replaceableNode.Right;
 
             if (parentNode == null)
             {
-                _root = replacementNode;
+                _root = minNode;
             }
             else if (parentNode.Right == replaceableNode)
             {
-                parentNode.Right = replacementNode;
+                parentNode.Right = minNode;
             }
             else
             {
-                parentNode.Left = replacementNode;
+                parentNode.Left = minNode;
             }
 
             Count--;
