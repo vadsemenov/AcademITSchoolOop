@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Text;
 
 namespace ListTask;
@@ -8,11 +7,11 @@ public class SingleLinkedList<T> : IEnumerable<T>
 {
     private Node<T> _head;
 
+    public int Count { get; private set; }
+
     public SingleLinkedList()
     {
     }
-
-    public int Count { get; private set; }
 
     public SingleLinkedList(T headNodeValue)
     {
@@ -29,15 +28,15 @@ public class SingleLinkedList<T> : IEnumerable<T>
     {
         if (_head == null)
         {
-            throw new ArgumentOutOfRangeException(nameof(SingleLinkedList<T>), "Список не содержит элементов.");
+            throw new InvalidOperationException("Список не содержит элементов.");
         }
     }
 
     private void CheckIndex(int index)
     {
-        if (index < 0)
+        if (index < 0 && index < Count)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс должен быть больше или равен нулю. Текущее значение {index}");
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс должен быть больше или равен нулю и не больше размера списка. Текущее значение {index}");
         }
     }
 
@@ -53,7 +52,7 @@ public class SingleLinkedList<T> : IEnumerable<T>
 
         for (var i = 1; i <= index; i++)
         {
-            currentNode = currentNode.Next ?? throw new ArgumentOutOfRangeException(nameof(index), $"Размер списка меньше запрашиваемого индекса. Размер списка {i + 1} элементов. Текущее значение индекса {index}");
+            currentNode = currentNode.Next;
         }
 
         return currentNode;
@@ -61,7 +60,10 @@ public class SingleLinkedList<T> : IEnumerable<T>
 
     public T GetByIndex(int index)
     {
-        CheckListIsEmpty();
+        if (Count == 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), $"Список пуст, невозможно получить значение. Текущее значение индекса {index}");
+        }
 
         CheckIndex(index);
 
@@ -70,7 +72,10 @@ public class SingleLinkedList<T> : IEnumerable<T>
 
     public T SetByIndex(int index, T value)
     {
-        CheckListIsEmpty();
+        if (Count == 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), $"Список пуст, невозможно присвоить значение. Текущее значение индекса {index}");
+        }
 
         CheckIndex(index);
 
@@ -85,7 +90,10 @@ public class SingleLinkedList<T> : IEnumerable<T>
 
     public T DeleteByIndex(int index)
     {
-        CheckListIsEmpty();
+        if (Count == 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), $"Список пуст, невозможно удалить значение. Текущее значение индекса {index}");
+        }
 
         CheckIndex(index);
 
@@ -97,7 +105,7 @@ public class SingleLinkedList<T> : IEnumerable<T>
         }
 
         var previousNode = GetNodeByIndex(index - 1);
-        var currentNode = previousNode.Next ?? throw new ArgumentOutOfRangeException(nameof(index), $"Размер списка меньше индекса. Размер списка {Count} элементов. Текущее значение индекса {index}");
+        var currentNode = previousNode.Next;
 
         var deletedValue = currentNode.Value;
 
@@ -117,6 +125,15 @@ public class SingleLinkedList<T> : IEnumerable<T>
 
     public void InsertByIndex(int index, T value)
     {
+        if (Count == 0)
+        {
+            _head = new Node<T>(value);
+
+            Count++;
+
+            return;
+        }
+
         CheckIndex(index);
 
         if (index == 0)
