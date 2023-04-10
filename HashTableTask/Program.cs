@@ -3,15 +3,15 @@ public class Program
 {
     static void Main(string[] args)
     {
-        var hashTable = new HashTable<int>(10);
-
-        hashTable.Add(56);
-        hashTable.Add(56);
-        hashTable.Add(56);
-
-        hashTable.Add(5);
-        hashTable.Add(6);
-        hashTable.Add(7);
+        var hashTable = new HashTable<int>(10)
+        {
+            56,
+            56,
+            56,
+            5,
+            6,
+            7
+        };
 
         Console.WriteLine("Содержимое HashTable: " + hashTable);
 
