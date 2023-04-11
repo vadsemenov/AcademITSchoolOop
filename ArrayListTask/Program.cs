@@ -4,9 +4,11 @@
     {
         static void Main(string[] args)
         {
-            var list = new SimpleArrayList<int>(100) { 1, 2, 3, 4, 5, 6, 7 };
+            var list = new SimpleArrayList<int>() { 1, 2, 3, 4, 5, 6, 7 };
 
             list.Add(8);
+
+            Console.WriteLine(list.IndexOf(null));
 
             Console.WriteLine(list.Count);
 

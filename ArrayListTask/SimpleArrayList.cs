@@ -6,8 +6,9 @@ namespace ArrayListTask;
 public class SimpleArrayList<T> : IList<T>
 {
     private const int DefaultCapacity = 4;
+
     private T[] _items;
-    private int _modCount = 0;
+    private int _modCount;
 
     public SimpleArrayList() => _items = new T[DefaultCapacity];
 
@@ -26,6 +27,7 @@ public class SimpleArrayList<T> : IList<T>
     public int Capacity
     {
         get => _items.Length;
+
         set
         {
             if (value < Count)
@@ -54,9 +56,10 @@ public class SimpleArrayList<T> : IList<T>
     {
         long newCapacity = _items.Length == 0 ? DefaultCapacity : _items.Length * 2;
 
-        if ((uint)newCapacity > int.MaxValue)
+        if (newCapacity > Array.MaxLength)
         {
-            Capacity = int.MaxValue;
+            Capacity = Array.MaxLength;
+            return;
         }
 
         Capacity = (int)newCapacity;
@@ -64,25 +67,15 @@ public class SimpleArrayList<T> : IList<T>
 
     public void TrimExcess()
     {
-        if (Count >= (int)(_items.Length * 0.9))
+        if (Count < _items.Length * 0.9)
         {
-            return;
+            Capacity = Count;
         }
-
-        Capacity = Count;
     }
 
-    private void CheckIndexForRead(int index)
+    private void CheckIndexValid(int index)
     {
         if (index < 0 || index >= Count)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс {index}, должен быть от 0 до {Count} включительно!");
-        }
-    }
-
-    private void CheckIndexForModify(int index)
-    {
-        if (index < 0 || index > Count)
         {
             throw new ArgumentOutOfRangeException(nameof(index), $"Индекс {index}, должен быть от 0 до {Count}!");
         }
@@ -92,13 +85,13 @@ public class SimpleArrayList<T> : IList<T>
     {
         get
         {
-            CheckIndexForRead(index);
+            CheckIndexValid(index);
 
             return _items[index];
         }
         set
         {
-            CheckIndexForModify(index);
+            CheckIndexValid(index);
 
             _items[index] = value;
 
@@ -115,7 +108,11 @@ public class SimpleArrayList<T> : IList<T>
 
     public void Clear()
     {
-        Array.Clear(_items);
+        if (Count == 0)
+        {
+            return;
+        }
+
         Count = 0;
 
         _modCount++;
@@ -157,7 +154,10 @@ public class SimpleArrayList<T> : IList<T>
 
     public void Insert(int index, T item)
     {
-        CheckIndexForModify(index);
+        if (index < 0 || index > Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс {index}, должен быть от 0 до {Count} включительно!");
+        }
 
         if (Count == _items.Length)
         {
@@ -177,7 +177,7 @@ public class SimpleArrayList<T> : IList<T>
 
     public void RemoveAt(int index)
     {
-        CheckIndexForModify(index);
+        CheckIndexValid(index);
 
         --Count;
 
@@ -215,9 +215,9 @@ public class SimpleArrayList<T> : IList<T>
     {
         var stringBuilder = new StringBuilder();
 
-        stringBuilder.Append("[");
+        stringBuilder.Append('[');
         stringBuilder.AppendJoin(", ", _items.Take(Count));
-        stringBuilder.Append("]");
+        stringBuilder.Append(']');
 
         return stringBuilder.ToString();
     }
