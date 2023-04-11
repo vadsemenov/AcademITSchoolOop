@@ -8,8 +8,6 @@
 
             list.Add(8);
 
-            Console.WriteLine(list.IndexOf(null));
-
             Console.WriteLine(list.Count);
 
             list.Insert(8, 9);
