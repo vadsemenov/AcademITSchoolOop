@@ -32,9 +32,17 @@ public class SingleLinkedList<T> : IEnumerable<T>
         }
     }
 
-    private void CheckIndex(int index)
+    private void CheckIndexForRead(int index)
     {
-        if (index < 0 && index < Count)
+        if (index < 0 || index >= Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс должен быть больше или равен нулю и не больше размера списка. Текущее значение {index}");
+        }
+    }
+
+    private void CheckIndexForModify(int index)
+    {
+        if (index < 0 || index > Count)
         {
             throw new ArgumentOutOfRangeException(nameof(index), $"Индекс должен быть больше или равен нулю и не больше размера списка. Текущее значение {index}");
         }
@@ -65,7 +73,7 @@ public class SingleLinkedList<T> : IEnumerable<T>
             throw new ArgumentOutOfRangeException(nameof(index), $"Список пуст, невозможно получить значение. Текущее значение индекса {index}");
         }
 
-        CheckIndex(index);
+        CheckIndexForRead(index);
 
         return GetNodeByIndex(index).Value;
     }
@@ -77,7 +85,7 @@ public class SingleLinkedList<T> : IEnumerable<T>
             throw new ArgumentOutOfRangeException(nameof(index), $"Список пуст, невозможно присвоить значение. Текущее значение индекса {index}");
         }
 
-        CheckIndex(index);
+        CheckIndexForRead(index);
 
         var currentNode = GetNodeByIndex(index);
 
@@ -95,12 +103,10 @@ public class SingleLinkedList<T> : IEnumerable<T>
             throw new ArgumentOutOfRangeException(nameof(index), $"Список пуст, невозможно удалить значение. Текущее значение индекса {index}");
         }
 
-        CheckIndex(index);
+        CheckIndexForRead(index);
 
         if (index == 0)
         {
-            Count--;
-
             return DeleteFirst();
         }
 
@@ -134,7 +140,7 @@ public class SingleLinkedList<T> : IEnumerable<T>
             return;
         }
 
-        CheckIndex(index);
+        CheckIndexForModify(index);
 
         if (index == 0)
         {
@@ -229,7 +235,6 @@ public class SingleLinkedList<T> : IEnumerable<T>
         newList._head = new Node<T>(_head.Value);
 
         var currentSourceNode = _head;
-
         var currentNode = newList._head;
 
         while (currentSourceNode.Next != null)
@@ -237,14 +242,12 @@ public class SingleLinkedList<T> : IEnumerable<T>
             var nextNode = new Node<T>(currentSourceNode.Next.Value);
 
             currentNode.Next = nextNode;
-            newList.Count++;
 
             currentNode = nextNode;
-
             currentSourceNode = currentSourceNode.Next;
         }
 
-        newList.Count++;
+        newList.Count = Count;
 
         return newList;
     }
@@ -270,9 +273,9 @@ public class SingleLinkedList<T> : IEnumerable<T>
     {
         var stringBuilder = new StringBuilder();
 
-        stringBuilder.Append("[");
+        stringBuilder.Append('[');
         stringBuilder.AppendJoin(", ", this);
-        stringBuilder.Append("]");
+        stringBuilder.Append(']');
 
         return stringBuilder.ToString();
     }
