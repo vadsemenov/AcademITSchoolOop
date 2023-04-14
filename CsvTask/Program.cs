@@ -28,10 +28,6 @@
             {
                 csvToHtmlConverter.ConvertCsvToHtml(args[0], args[1]);
             }
-            catch (FileNotFoundException e)
-            {
-                Console.WriteLine(e.Message);
-            }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);

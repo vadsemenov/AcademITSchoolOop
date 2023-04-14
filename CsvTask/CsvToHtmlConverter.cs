@@ -1,4 +1,5 @@
 ﻿namespace CsvTask;
+
 public class CsvToHtmlConverter
 {
     public void ConvertCsvToHtml(string inputCsvFileName, string outputHtmlFileName)
@@ -13,14 +14,14 @@ public class CsvToHtmlConverter
 
         WriteHtmlDocumentStartingTags(writer, outputHtmlFileName);
 
-        var isInQuotesToken = false;
+        var isInQuotes = false;
         var needToCloseCurrentTrTagAndOpenNewTrTag = false;
 
         string line;
 
         while ((line = reader.ReadLine()) != null)
         {
-            if (isInQuotesToken && line != "")
+            if (isInQuotes && line != "")
             {
                 writer.Write("<br>");
             }
@@ -35,7 +36,7 @@ public class CsvToHtmlConverter
             {
                 var currentSymbol = line[i];
 
-                if (isInQuotesToken)
+                if (isInQuotes)
                 {
                     if (currentSymbol != '"')
                     {
@@ -55,12 +56,12 @@ public class CsvToHtmlConverter
                         if (nextSymbolIndex >= line.Length)
                         {
                             needToCloseCurrentTrTagAndOpenNewTrTag = true;
-                            isInQuotesToken = false;
+                            isInQuotes = false;
                         }
                         else if (line[nextSymbolIndex] == ',')
                         {
                             WriteCurrentTdAndOpenNewTd(writer);
-                            isInQuotesToken = false;
+                            isInQuotes = false;
                             i++;
 
                             if (i + 1 == line.Length)
@@ -79,7 +80,7 @@ public class CsvToHtmlConverter
                 {
                     if (currentSymbol == '"')
                     {
-                        isInQuotesToken = true;
+                        isInQuotes = true;
                     }
                     else
                     {
