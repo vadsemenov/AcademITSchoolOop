@@ -297,10 +297,10 @@
                 return true;
             }
 
-            return ReplaceNode(parentNode, deletedNode);
+            return RemoveNode(parentNode, deletedNode);
         }
 
-        private bool ReplaceNode(Node<T> parentNode, Node<T> replaceableNode)
+        private bool RemoveNode(Node<T> parentNode, Node<T> replaceableNode)
         {
             var minNodeParent = replaceableNode;
             var minNode = replaceableNode.Right;

@@ -136,12 +136,12 @@ public class HashTable<T> : ICollection<T>
             throw new ArgumentException("Размер массива не достаточен для копирования значений!", nameof(array));
         }
 
-        var arrayCount = arrayIndex;
+        var i = arrayIndex;
 
         foreach (var value in this)
         {
-            array[arrayCount] = value;
-            arrayCount++;
+            array[i] = value;
+            i++;
         }
     }
 
