@@ -150,7 +150,15 @@ public class SingleLinkedList<T> : IEnumerable<T>
         {
             var currentNode = previousNode.Next;
 
-            if (currentNode.Value.Equals(value))
+            if (value == null && currentNode.Value == null)
+            {
+                previousNode.Next = currentNode.Next;
+                Count--;
+
+                return true;
+            }
+
+            if (value != null && currentNode.Value != null && currentNode.Value.Equals(value))
             {
                 previousNode.Next = currentNode.Next;
                 Count--;
