@@ -10,6 +10,8 @@ public class SimpleArrayList<T> : IList<T>
     private T[] _items;
     private int _modCount;
 
+    public int Count { get; private set; }
+
     public SimpleArrayList() => _items = new T[DefaultCapacity];
 
     public SimpleArrayList(int capacity)
@@ -51,7 +53,6 @@ public class SimpleArrayList<T> : IList<T>
         }
     }
 
-
     private void IncreaseCapacity()
     {
         long newCapacity = _items.Length == 0 ? DefaultCapacity : _items.Length * 2;
@@ -67,17 +68,17 @@ public class SimpleArrayList<T> : IList<T>
 
     public void TrimExcess()
     {
-        if (Count < _items.Length * 0.9)
+        if (Count < Capacity * 0.9)
         {
             Capacity = Count;
         }
     }
 
-    private void CheckIndexValid(int index)
+    private void CheckIndex(int index)
     {
         if (index < 0 || index >= Count)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс {index}, должен быть от 0 до {Count}!");
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс {index}, должен быть от 0 до {Count - 1} включительно!");
         }
     }
 
@@ -85,21 +86,20 @@ public class SimpleArrayList<T> : IList<T>
     {
         get
         {
-            CheckIndexValid(index);
+            CheckIndex(index);
 
             return _items[index];
         }
+
         set
         {
-            CheckIndexValid(index);
+            CheckIndex(index);
 
             _items[index] = value;
 
             _modCount++;
         }
     }
-
-    public int Count { get; private set; }
 
     public void Add(T item)
     {
@@ -113,8 +113,12 @@ public class SimpleArrayList<T> : IList<T>
             return;
         }
 
-        Count = 0;
+        for (int i = 0; i < Count; i++)
+        {
+            _items[i] = default;
+        }
 
+        Count = 0;
         _modCount++;
     }
 
@@ -143,7 +147,12 @@ public class SimpleArrayList<T> : IList<T>
     {
         for (var i = 0; i < Count; i++)
         {
-            if (_items[i].Equals(item))
+            if (item == null && _items[i] == null)
+            {
+                return i;
+            }
+
+            if (_items[i] != null && item != null && _items[i].Equals(item))
             {
                 return i;
             }
@@ -170,14 +179,13 @@ public class SimpleArrayList<T> : IList<T>
         }
 
         _items[index] = item;
-        ++Count;
-
+        Count++;
         _modCount++;
     }
 
     public void RemoveAt(int index)
     {
-        CheckIndexValid(index);
+        CheckIndex(index);
 
         --Count;
 
