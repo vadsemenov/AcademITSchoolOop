@@ -197,11 +197,11 @@ public class SingleLinkedList<T> : IEnumerable<T>
 
         while (currentNode != null)
         {
-            var tailNode = currentNode.Next;
+            var nextNode = currentNode.Next;
             currentNode.Next = previousNode;
 
             previousNode = currentNode;
-            currentNode = tailNode;
+            currentNode = nextNode;
         }
 
         _head = previousNode;
@@ -218,16 +218,14 @@ public class SingleLinkedList<T> : IEnumerable<T>
 
         newList._head = new Node<T>(_head.Value);
 
-        var currentSourceNode = _head;
+        var currentSourceNode = _head.Next;
         var currentNode = newList._head;
 
-        while (currentSourceNode.Next != null)
+        while (currentSourceNode != null)
         {
-            var nextNode = new Node<T>(currentSourceNode.Next.Value);
+            currentNode.Next = new Node<T>(currentSourceNode.Value);
 
-            currentNode.Next = nextNode;
-
-            currentNode = nextNode;
+            currentNode = currentNode.Next;
             currentSourceNode = currentSourceNode.Next;
         }
 
