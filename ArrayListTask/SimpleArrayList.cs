@@ -113,7 +113,7 @@ public class SimpleArrayList<T> : IList<T>
             return;
         }
 
-        for (int i = 0; i < Count; i++)
+        for (var i = 0; i < Count; i++)
         {
             _items[i] = default;
         }
@@ -147,12 +147,7 @@ public class SimpleArrayList<T> : IList<T>
     {
         for (var i = 0; i < Count; i++)
         {
-            if (item == null && _items[i] == null)
-            {
-                return i;
-            }
-
-            if (_items[i] != null && item != null && _items[i].Equals(item))
+            if (Equals(_items[i], item))
             {
                 return i;
             }
@@ -223,8 +218,18 @@ public class SimpleArrayList<T> : IList<T>
     {
         var stringBuilder = new StringBuilder();
 
+        var items = _items.Take(Count).Select(x =>
+        {
+            if (Equals(x, null))
+            {
+                return "null";
+            }
+
+            return x.ToString();
+        }).ToArray();
+
         stringBuilder.Append('[');
-        stringBuilder.AppendJoin(", ", _items.Take(Count));
+        stringBuilder.AppendJoin(", ", items);
         stringBuilder.Append(']');
 
         return stringBuilder.ToString();
