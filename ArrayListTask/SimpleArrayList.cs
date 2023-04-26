@@ -218,18 +218,27 @@ public class SimpleArrayList<T> : IList<T>
     {
         var stringBuilder = new StringBuilder();
 
-        var items = _items.Take(Count).Select(x =>
+        stringBuilder.Append('[');
+
+        for (int i = 0; i < Count; i++)
         {
-            if (Equals(x, null))
+            if (_items[i] is null)
             {
-                return "null";
+                stringBuilder.Append("null");
+            }
+            else
+            {
+                stringBuilder.Append(_items[i]);
             }
 
-            return x.ToString();
-        }).ToArray();
+            stringBuilder.Append(", ");
+        }
 
-        stringBuilder.Append('[');
-        stringBuilder.AppendJoin(", ", items);
+        if (stringBuilder.Length > 3)
+        {
+            stringBuilder.Remove(stringBuilder.Length - 2, 2);
+        }
+
         stringBuilder.Append(']');
 
         return stringBuilder.ToString();
