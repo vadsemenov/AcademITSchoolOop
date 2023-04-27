@@ -137,7 +137,7 @@ public class SingleLinkedList<T> : IEnumerable<T>
             return false;
         }
 
-        if (_head.Value.Equals(value))
+        if (Equals(_head.Value, value))
         {
             DeleteFirst();
 
@@ -150,15 +150,7 @@ public class SingleLinkedList<T> : IEnumerable<T>
         {
             var currentNode = previousNode.Next;
 
-            if (value == null && currentNode.Value == null)
-            {
-                previousNode.Next = currentNode.Next;
-                Count--;
-
-                return true;
-            }
-
-            if (value != null && currentNode.Value != null && currentNode.Value.Equals(value))
+            if (Equals(currentNode.Value, value))
             {
                 previousNode.Next = currentNode.Next;
                 Count--;
@@ -256,7 +248,27 @@ public class SingleLinkedList<T> : IEnumerable<T>
         var stringBuilder = new StringBuilder();
 
         stringBuilder.Append('[');
-        stringBuilder.AppendJoin(", ", this);
+
+
+        foreach (var item in this)
+        {
+            if (item is null)
+            {
+                stringBuilder.Append("null");
+            }
+            else
+            {
+                stringBuilder.Append(item);
+            }
+
+            stringBuilder.Append(", ");
+        }
+
+        if (stringBuilder.Length > 3)
+        {
+            stringBuilder.Remove(stringBuilder.Length - 2, 2);
+        }
+
         stringBuilder.Append(']');
 
         return stringBuilder.ToString();
