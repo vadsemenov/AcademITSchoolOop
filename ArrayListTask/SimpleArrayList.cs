@@ -239,10 +239,7 @@ public class SimpleArrayList<T> : IList<T>
             stringBuilder.Append(", ");
         }
 
-        if (Count > 0)
-        {
-            stringBuilder.Remove(stringBuilder.Length - 2, 2);
-        }
+        stringBuilder.Remove(stringBuilder.Length - 2, 2);
 
         stringBuilder.Append(']');
 

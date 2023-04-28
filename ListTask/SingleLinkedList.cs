@@ -245,6 +245,11 @@ public class SingleLinkedList<T> : IEnumerable<T>
 
     public override string ToString()
     {
+        if (Count == 0)
+        {
+            return "[]";
+        }
+
         var stringBuilder = new StringBuilder();
 
         stringBuilder.Append('[');
@@ -264,10 +269,7 @@ public class SingleLinkedList<T> : IEnumerable<T>
             stringBuilder.Append(", ");
         }
 
-        if (stringBuilder.Length > 3)
-        {
-            stringBuilder.Remove(stringBuilder.Length - 2, 2);
-        }
+        stringBuilder.Remove(stringBuilder.Length - 2, 2);
 
         stringBuilder.Append(']');
 
